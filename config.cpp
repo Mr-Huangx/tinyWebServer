@@ -28,6 +28,9 @@ Config::Config(){
     // I/O模式选择
     //默认为proactor，即通知就绪时间
     actor_model = 0;
+
+    //ip地址,默认为空
+    ip = "";
 }
 
 void Config::init(int argc, char* argv[]){
@@ -91,7 +94,7 @@ void Config::init(int argc, char* argv[]){
             break;
         }
     }
-    
+
     // 测试解析结果
     test_content();
 }
