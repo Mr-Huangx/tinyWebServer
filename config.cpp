@@ -32,7 +32,7 @@ Config::Config(){
 
 void Config::init(int argc, char* argv[]){
     int opt;
-    const char *str = "p:l:m:o:s:t:c:a:";
+    const char *str = "p:l:m:o:s:t:c:a:i:";
     //getop(argc, argv, str)根据str获取对应选项的参数
     while((opt = getopt(argc, argv, str)) != -1){
         switch (opt)
@@ -80,6 +80,11 @@ void Config::init(int argc, char* argv[]){
         case 'a':
         {
             actor_model = atoi(optarg);
+            break;
+        }
+        case 'i':
+        {
+            ip = optarg;
             break;
         }
         default:

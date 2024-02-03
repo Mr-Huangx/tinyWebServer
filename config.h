@@ -1,7 +1,10 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "webserver.h"
+#include<unistd.h>
+#include<string>
+#include<stdlib.h>
+
 using namespace std;
 
 class Config{
@@ -36,6 +39,9 @@ public:
 
     //并发模式选择（半同步/半反应堆模型，半同步/半异步模型，领导者/追随者模型）
     int actor_model;
+
+    //手动输入服务器ip地址
+    const char* ip;
 };
 
 
