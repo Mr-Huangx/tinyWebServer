@@ -8,9 +8,9 @@ void WebServer::init(string user, string passwd, string database,Config config)
     config = config;
 }
 
-void webserver::eventListen(){
+void WebServer::eventListen(){
     //创建listen socket，使用TCP连接
-    int listenfd = socket(PF_INET, STREAM, 0);
+    int listenfd = socket(PF_INET, SOCK_STREAM, 0);
     assert(listenfd > 0);
 
     //对于listenfd的关闭，采用默认方式，即如果有数据，则交给TCP模块负责
