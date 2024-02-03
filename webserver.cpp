@@ -29,4 +29,6 @@ void WebServer::eventListen(){
     address.sin_family = AF_INET;
     inet_pton(AF_INET, config.ip, &address.sin_addr);
     address.sin_port = htons(config.PORT);
+
+    
 }

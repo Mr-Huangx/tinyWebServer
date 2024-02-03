@@ -84,11 +84,27 @@ void Config::init(int argc, char* argv[]){
         }
         case 'i':
         {
-            ip = optarg;
+            ip = string(optarg);
             break;
         }
         default:
             break;
         }
     }
+    
+    // 测试解析结果
+    test_content();
+}
+
+void Config::test_content(){
+    cout<<"port: "<<PORT<<endl;
+    cout<<"LOGWrite: "<<LOGWrite<<endl;
+    cout<<"TRIGMode: "<<TRIGMode<<endl;
+    cout<<"LISTENTrigmode: "<<LISTENTrigmode<<endl;
+    cout<<"OPT_LINGER:" <<OPT_LINGER<<endl;
+    cout<<"sql_num: "<<sql_num<<endl;
+    cout<<"thread_num: "<<thread_num<<endl;
+    cout<<"close_log: "<<close_log<<endl;
+    cout<<"actor_model: "<<actor_model<<endl;
+    cout<<"ip: "<<ip<<endl;
 }

@@ -4,6 +4,7 @@
 #include<unistd.h>
 #include<string>
 #include<stdlib.h>
+#include<iostream>
 
 using namespace std;
 
@@ -12,6 +13,7 @@ public:
     Config();
     ~Config(){};
     void init(int argc, char* argv[]);//初始化config实例
+    void test_content();//用于测试解析完成后各个参数的值
 
     //服务器端口号
     int PORT;
@@ -41,7 +43,7 @@ public:
     int actor_model;
 
     //手动输入服务器ip地址
-    const char* ip;
+    string ip;
 };
 
 
