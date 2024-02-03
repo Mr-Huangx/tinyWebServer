@@ -27,7 +27,7 @@ void WebServer::eventListen(){
     struct sockaddr_in address;
     bzero(&address, sizeof(address)); 
     address.sin_family = AF_INET;
-    inet_pton(AF_INET, config.ip, &address.sin_addr);
+    inet_pton(AF_INET, config.ip.data(), &address.sin_addr);
     address.sin_port = htons(config.PORT);
 
     
