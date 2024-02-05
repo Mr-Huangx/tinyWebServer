@@ -1,5 +1,18 @@
-#include"webserver.h"
+#include "webserver.h"
 
+WebServer::WebServer(){
+    //初始化users
+    users = new http_conn[MAX_FD];
+
+    //拼接资源路径，即目录中root目录的路径
+    char server_path[200];
+    getcwd(server_path, 200);
+    char root[6] = "/root";
+    source = (char*)malloc(strlen(server_path) + strlen(root) + 1);
+    strcpy(source, server_path);
+    strcat(source, root);
+
+}
 void WebServer::init(string user, string passwd, string database,Config config)
 {
     user = user;
@@ -7,6 +20,23 @@ void WebServer::init(string user, string passwd, string database,Config config)
     database = database;
     config = config;
 }
+
+void WebServer::init_connection_pool()
+{
+    //初始化连接池
+    connPool = connection_pool::getInstance();//获取单例
+    connPool->init(config.ip, user, password, database, 3306, config.sql_num);
+
+    //初始化数据库读表
+    users->initmysql_result(connPool);
+}
+
+void WebServer::init_threadPool()
+{
+    //初始化线程池
+    threadPool = new threadPool<http_conn>(config.thread_num, config.max_request_num, config.actor_model)
+}
+
 
 void WebServer::eventListen(){
     //创建listen socket，使用TCP连接
@@ -30,5 +60,151 @@ void WebServer::eventListen(){
     inet_pton(AF_INET, config.ip.data(), &address.sin_addr);
     address.sin_port = htons(config.PORT);
 
+    //设置服务器使用的端口号为可立即重用
+    int flag = 1;
+    sersockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+
+    //将listenfd和address进行绑定
+    assert(bind(listenfd, (struct sockaddr*)&address, sizeof(address)) >= 0);
     
+    //设置监听队列最大长度
+    assert(listen(listenfd, 5) >= 0);
+
+    //创建epoll句柄
+    epollfd = epoll_create(5);
+    Utils::epollfd = epollfd;
+    
+    assert(epollfd != -1);
+
+    //创建epoll事件表，用于接收有事件发生的epoll_event
+    epoll_event events[MAX_EVENT_NUMBER];
+
+    //将listenfd加入到epollfd中
+    utils.addfd(epollfd, listenfd, false, config.LISTENTrigmode);
+
+    //进入循环监听任务
+    bool stop_server = false;
+    while(!stop_server){
+        //使用epoll_wait进行监听，传入-1一直阻塞，直到检测到有事件为止
+        int number = epoll_wait(epollfd, events, MAX_EVENT_NUMBER, -1);
+
+        if(number < 0 && errno != EINTR){
+            //出错
+
+            break;
+        }
+
+        for(int i = 0; i < number; i++){
+            //依次遍历各个事件进行处理
+            int sockfd = events[i].data.fd;
+
+            //判断文件描述符类型
+            if(sockfd == listenfd){
+                //如果是listenfd有事件发生，即有新的客户连接
+                bool flag = deal_client_connect();
+                if(flag == false){
+                    continue;
+                }
+            }
+            //处理客户端发来数据
+            else if(events[i].events & EPOLLIN){
+                deal_read_data(sockfd);
+            }
+            //处理发送数据
+            else if(events[i].events & EPOLLOUT){
+                deal_write_data(sockfd);
+            }
+        }
+    }
+    
+}
+
+bool WebServer::deal_client_connect(){
+    //处理新的客户连接
+    struct sockaddr_in client_address;
+    socklen_t client_addrlength = sizeof(client_address);
+    
+    if(config.LISTENTrigmode == 0){
+        //如果listenfd采用的是LT模式
+        int connfd = accept(listenfd, (struct sockaddr*)&client_address, &client_addrlength);
+        if(connfd < 0){
+            //建立连接失败
+
+            return false;
+        }
+
+        if(http_conn::user_count >= MAX_FD){
+            //http连接数量已经到达系统最大文件描述符数量，现在不能建立新的连接
+            return false;
+        }
+
+        //将connfd加入到epollfd中
+        utils.addfd(epollfd, connfd, false, config.CONNTrigmode);
+
+        //将http记录到users数组中
+        users[connfd].init(connfd, client_address, source, config.CONNTrigmode, config.close_log, user, password, database);
+        http_conn::user_count++;
+    }
+    else{
+        //如果listenfd采用的是ET模式
+        while(1){
+            int connfd = accept(listenfd, (struct sockaddr*)&client_address, &client_addrlength);
+            if(connfd < 0){
+                //出错
+                break;
+            }
+
+            if(http_conn::user_count >= MAX_FD){
+            //http连接数量已经到达系统最大文件描述符数量，现在不能建立新的连接
+                return false;
+            }
+            //将connfd加入到epollfd中
+            utils.addfd(epollfd, connfd, false, config.CONNTrigmode);
+
+            //将http记录到users数组中
+            users[connfd].init(connfd, client_address, source, config.CONNTrigmode, config.close_log, user, password, database);
+            http_conn::user_count++;
+        }
+        return false;
+    }
+    return true;
+}
+
+//处理客户端发来的数据
+void WebServer::deal_read_data(int sockfd){
+    //根据I/O模型，进行不同操作
+    //reactor模型
+    if(config.actor_model == 1){
+        //监听到读事件，将事件放入请求队列中，让逻辑处理单元进行处理
+        while(!threadPool->append(users+ sockfd, 0)){
+            //如果加入失败，则可能是任务太多等待几秒再继续
+        }
+
+    }
+    else{
+        //proactor模型，通知就绪事件
+        if(users[sockfd].read_once()){
+            //由主进程一次性将数据处理完，然后通知程序进行后续操作
+            while(!threadPool->append_p(users+sockfd));
+        }
+    }
+}
+
+//处理sockfd需要发送数据
+void WebServer::deal_write_data(int sockfd){
+    
+    if (1 == config.actormodel)
+    {
+        //reactor模式
+        while( !threadPool->append(users + sockfd, 1)){
+            //如果加入失败，则可能是任务太多等待几秒再继续
+        }
+    }
+    else
+    {
+        //proactor
+        if(users[sockfd].write()){
+            //proactor模式，只需要向软件通知完成即可，不需要处理
+        }
+    }    
 }

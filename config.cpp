@@ -13,6 +13,9 @@ Config::Config(){
     //listenfd的触发模式，默认为LT
     LISTENTrigmode = 0;
 
+    //connfd的触发模式，默认为LT
+    CONNTrigmode = 0;
+
     //是否采用优雅关闭socket，默认不使用
     OPT_LINGER = 0;
 
@@ -58,6 +61,7 @@ void Config::init(int argc, char* argv[]){
         case 'm':
         {
             TRIGMode = atoi(optarg);
+            deal_trigmode();
             break;
         }
         case 'o':
@@ -97,6 +101,39 @@ void Config::init(int argc, char* argv[]){
 
     // 测试解析结果
     test_content();
+}
+//将TRIGMode拆解为LISTENTrigmode、 CONNTrigmode
+void Config::deal_trigmode(){
+    switch(TRIGMode){
+        case 0:
+        {
+            //LT+LT
+            LISTENTrigmode = 0;
+            CONNTrigmode = 0;
+            break;
+        }
+        case 1:
+        {
+            //LT+ET
+            LISTENTrigmode = 0;
+            CONNTrigmode = 1;
+            break;
+        }
+        case 2:
+        {
+            //ET+LT
+            LISTENTrigmode = 1;
+            CONNTrigmode = 0;
+            break;
+        }
+        case 3:
+        {
+            //ET+ET
+            LISTENTrigmode = 1;
+            CONNTrigmode = 1;
+            break;
+        }
+    }
 }
 
 void Config::test_content(){

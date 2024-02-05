@@ -14,6 +14,7 @@ public:
     ~Config(){};
     void init(int argc, char* argv[]);//初始化config实例
     void test_content();//用于测试解析完成后各个参数的值
+    void deal_trigmode();//将TRIGMode拆解为LISTENTrigmode、CONNTrigmode
 
     //服务器端口号
     int PORT;
@@ -26,6 +27,9 @@ public:
 
     //listenfd的触发模式
     int LISTENTrigmode;
+
+    //connfd的触发模式
+    int CONNTrigmode;
 
     //如何关闭
     int OPT_LINGER;
