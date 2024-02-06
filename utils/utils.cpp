@@ -1,6 +1,6 @@
 #include "utils.h"
 
-
+int Utils::epollfd = -1;
 //对文件描述符设置非阻塞
 int Utils::setnonblocking(int fd){
     int old_option = fcntl(fd, F_GETFL);
