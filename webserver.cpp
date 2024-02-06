@@ -34,7 +34,7 @@ void WebServer::init_connection_pool()
 void WebServer::init_threadPool()
 {
     //初始化线程池
-    threadPool = new ThreadPool<http_conn>(config.thread_num, config.max_request_num, config.actor_model)
+    threadPool = new ThreadPool<http_conn>(config.actor_model, connPool, config.thread_num);
 }
 
 

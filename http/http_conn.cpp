@@ -22,7 +22,7 @@ void http_conn::init(int sockfd, const sockaddr_in &addr, char *source,int TRIGM
 {
     //只有构造函数能使用列表初始化
     this->sockfd = sockfd;
-    thhis->address = addr;
+    this->address = addr;
     this->source = source;
     utils.addfd(epollfd, sockfd, true, TRIGMode);
     user_count++;
@@ -249,7 +249,7 @@ http_conn::HTTP_CODE http_conn::parse_content()
             case CHECK_STATE_HEADER:
             {
                 //解析请求头部
-                ret = parse_headers();
+                ret = parse_headers(text);
                 if(ret == BAD_REQUEST) return BAD_REQUEST;
                 else if(ret == GET_REQUEST){
                     //获取到了http请求
@@ -261,7 +261,7 @@ http_conn::HTTP_CODE http_conn::parse_content()
             {
                 ret = parse_request_content(text);
                 if (ret == GET_REQUEST)
-                    return do_request();
+                    return deal_request();
                 line_status = LINE_OPEN;
                 break;
             }
@@ -592,7 +592,7 @@ void http_conn::close_conn(bool real_close)
 }
 
 //初始化http连接的读取表
-void initmysql_result(connection_pool *connPool)
+void http_conn::initmysql_result(connection_pool *connPool)
 {
     //先从连接池中取一个连接
     MYSQL *mysql = NULL;
@@ -664,7 +664,7 @@ bool http_conn::add_content_length(int content_len)
 //添加响应头部的connection字段
 bool http_conn::add_linger()
 {
-    return add_response("Connection:%s\r\n", (m_linger == true) ? "keep-alive" : "close");
+    return add_response("Connection:%s\r\n", (linger == true) ? "keep-alive" : "close");
 }
 
 //添加响应头部的内容类别

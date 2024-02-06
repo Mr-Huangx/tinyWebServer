@@ -18,7 +18,14 @@ int main(int argc, char *argv[]){
     //初始化服务器的各项参数
     server.init(user, passwd, database, config);
 
-    
+    //初始化数据库
+    server.init_connection_pool();
+
+    //初始化线程池
+    server.init_threadPool();
+
+    //开始运行
+    server.eventListen();
 
     return 0;
 }

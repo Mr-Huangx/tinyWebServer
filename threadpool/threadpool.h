@@ -15,7 +15,7 @@
 template<typename T>
 class ThreadPool{
 public:
-    ThreadPool(int actor_model, connection_pool* connPool, int thread_num, int max_requests);
+    ThreadPool(int actor_model, connection_pool* connPool, int thread_num=8, int max_requests=10000);
     ~ThreadPool();
 
     bool append(T *request, int state);//增加reactor的任务
