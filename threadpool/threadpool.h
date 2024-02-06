@@ -11,7 +11,6 @@
 #include"../CGImysql/sql_connection_pool.h"
 
 
-
 template<typename T>
 class ThreadPool{
 public:

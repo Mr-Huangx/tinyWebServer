@@ -1,7 +1,18 @@
-CXX ?= g++
+CXX ?= g++ 
+CXXFLAGS = -Wall -Wextra -pedantic -std=c++11 
 
-server: main.cpp   webserver.cpp config.cpp ./http/http_conn.cpp ./CGImysql/sql_connection_pool.cpp  ./threadpool/threadpool.cpp ./utils/utils.cpp
-	$(CXX) -o server  $^ -lpthread -L/usr/lib64/mysql -lmysqlclient
+SRCS = main.cpp \
+ 		./http/http_conn.cpp \
+  		./CGImysgl/sgl_connection_pool.cpp \
+   		./threadpool/threadpool.cpp \
+    	./utils/utils.cpp \
+	 	webserver.cpp \ 
+	 	config.cpp 
+OBJS = $(SRCS:.cpp=.o) 
+server: $(OBJS) 
+	$(CXX) -o $@ $^ -lpthread -L/usr/lib64/mysql -lmysqlclient 
+%.o: %.cpp 
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
-clean:
-	rm  -r server
+clean: 
+	rm -f $(OBJS) server
