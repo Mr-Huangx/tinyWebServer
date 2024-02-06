@@ -3,7 +3,7 @@ CXXFLAGS = -Wall -Wextra -pedantic -std=c++11
 
 SRCS = main.cpp \
  		./http/http_conn.cpp \
-  		./CGImysgl/sgl_connection_pool.cpp \
+  		./CGImysql/sql_connection_pool.cpp \
    		./threadpool/threadpool.cpp \
     	./utils/utils.cpp \
 	 	webserver.cpp \
