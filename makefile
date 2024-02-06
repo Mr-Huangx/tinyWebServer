@@ -6,13 +6,13 @@ SRCS = main.cpp \
   		./CGImysgl/sgl_connection_pool.cpp \
    		./threadpool/threadpool.cpp \
     	./utils/utils.cpp \
-	 	webserver.cpp \ 
-	 	config.cpp 
+	 	webserver.cpp \
+	 	config.cpp
 OBJS = $(SRCS:.cpp=.o) 
 server: $(OBJS) 
 	$(CXX) -o $@ $^ -lpthread -L/usr/lib64/mysql -lmysqlclient 
 %.o: %.cpp 
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
-clean: 
+clean:
 	rm -f $(OBJS) server
