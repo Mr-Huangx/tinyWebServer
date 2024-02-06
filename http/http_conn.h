@@ -25,6 +25,7 @@
 
 
 #include"../utils/utils.h"
+#include "../CGImysql/sql_connection_pool.h"
 
 
 class http_conn{
