@@ -23,7 +23,6 @@
 #include <sys/uio.h>
 #include <map>
 
-
 #include"../utils/utils.h"
 #include "../CGImysql/sql_connection_pool.h"
 #include "../lock/my_lock.h"

@@ -13,6 +13,15 @@ WebServer::WebServer(){
     strcat(source, root);
 
 }
+
+WebServer::~WebServer()
+{
+    close(epollfd);
+    close(listenfd);
+    delete[] users;
+    delete threadPool;
+}
+
 void WebServer::init(string user, string passwd, string database,Config config)
 {
     user = user;
