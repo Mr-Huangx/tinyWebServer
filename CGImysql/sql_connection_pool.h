@@ -42,7 +42,7 @@ private:
     string password;//登录数据库的密码
     string databasename;//使用的数据库名
     
-}
+};
 
 //上面完成了连接池的设计
 //接下来将其封装成RAII资源，以减少编写中手动释放资源
@@ -54,7 +54,7 @@ public:
 private:
     connection_pool* pool;
     MYSQL *con;
-}
+};
 
 
 #endif

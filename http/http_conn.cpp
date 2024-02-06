@@ -10,13 +10,20 @@ const char *error_404_title = "Not Found";
 const char *error_404_form = "The requested file was not found on this server.\n";
 const char *error_500_title = "Internal Error";
 const char *error_500_form = "There was an unusual problem serving the request file.\n";
+
 int http_conn::user_count = 0;
 int http_conn::epollfd = -1;//epoll_create返回的结果
 
+map<string, string> http_conn::users;
+My_lock http_conn::mutex;
+
 void http_conn::init(int sockfd, const sockaddr_in &addr, char *source,int TRIGMode,
-                    int close_log,string user, string passwd, string sqlname):
-                    sockfd(sockfd),address(addr),source(source),
+                    int close_log,string user, string passwd, string sqlname)
 {
+    //只有构造函数能使用列表初始化
+    this->sockfd = sockfd;
+    thhis->address = addr;
+    this->source = source;
     utils.addfd(epollfd, sockfd, true, TRIGMode);
     user_count++;
 
@@ -104,7 +111,7 @@ http_conn::LINE_STATUS http_conn::parse_line()
 
 //分析请求行
 http_conn::HTTP_CODE http_conn::parse_requestline(char* text){
-    url = strpbk(text, " \t");//返回在temp中首次出现"空格"/"\t"字符的位置指针
+    url = strpbrk(text, " \t");//返回在temp中首次出现"空格"/"\t"字符的位置指针
 
     //如果请求行中没有空白字符或者"\t"字符，则HTTP请求必然有问题
     if( !url ) return BAD_REQUEST;
@@ -115,12 +122,12 @@ http_conn::HTTP_CODE http_conn::parse_requestline(char* text){
     
     if( strcasecmp(method, "GET") == 0){
         //如果是get方法
-        this->method = "GET";
+        this->method = GET;
     }
     else if(strcasecmp(method, "POST") == 0){
 
         //如果是post方法
-        this->method = "POST";
+        this->method = POST;
         cgi = 1;
     }
     else{
@@ -131,7 +138,7 @@ http_conn::HTTP_CODE http_conn::parse_requestline(char* text){
     url += strspn(url, " \t");////返回url中首个不与"空格"/"空制表符"相同的字符的位置
     version = strpbrk(url, " \t");
     if( !version ){
-        returen BAD_REQUEST;
+        return BAD_REQUEST;
     }
     *version++ = '\0';
     version += strspn(version, " \t");
@@ -168,7 +175,7 @@ http_conn::HTTP_CODE http_conn::parse_requestline(char* text){
 //分析头部字段
 http_conn::HTTP_CODE http_conn::parse_headers(char *text){
     //遇到一个空行，说明我们得到了一个正确的HTTP请求
-    if (temp[0] == '\0'){
+    if (text[0] == '\0'){
         if (content_length != 0)
         {
             check_state = CHECK_STATE_CONTENT;
@@ -201,6 +208,17 @@ http_conn::HTTP_CODE http_conn::parse_headers(char *text){
     else{
         //只处理Host/connection/content_length字段，其他不处理
 
+    }
+    return NO_REQUEST;
+}
+//分析http请求中的content部分
+http_conn::HTTP_CODE http_conn::parse_request_content(char *text){
+    if (read_idx >= (content_length + checked_idx))
+    {
+        text[content_length] = '\0';
+        //POST请求中最后为输入的用户名和密码
+        request_head = text;
+        return GET_REQUEST;
     }
     return NO_REQUEST;
 }
@@ -241,7 +259,7 @@ http_conn::HTTP_CODE http_conn::parse_content()
             }
             case CHECK_STATE_CONTENT:
             {
-                ret = parse_content(text);
+                ret = parse_request_content(text);
                 if (ret == GET_REQUEST)
                     return do_request();
                 line_status = LINE_OPEN;
@@ -302,10 +320,10 @@ http_conn::HTTP_CODE http_conn::deal_request()
 
             if (users.find(name) == users.end())
             {
-                m_lock.lock();
+                mutex.lock();
                 int res = mysql_query(mysql, sql_insert);
                 users.insert(pair<string, string>(name, password));
-                m_lock.unlock();
+                mutex.unlock();
 
                 if (!res)
                     strcpy(url, "/log.html");
@@ -320,9 +338,9 @@ http_conn::HTTP_CODE http_conn::deal_request()
         else if (*(p + 1) == '2')
         {
             if (users.find(name) != users.end() && users[name] == password)
-                strcpy(m_url, "/welcome.html");
+                strcpy(url, "/welcome.html");
             else
-                strcpy(m_url, "/logError.html");
+                strcpy(url, "/logError.html");
         }  
     }
 
@@ -445,7 +463,7 @@ bool http_conn::write()
 
     if (bytes_to_send == 0)
     {
-        modfd(epollfd, sockfd, EPOLLIN, TRIGMode);
+        utils.modfd(epollfd, sockfd, EPOLLIN, TRIGMode);
         init();
         return true;
     }
@@ -458,7 +476,7 @@ bool http_conn::write()
         {
             if (errno == EAGAIN)
             {
-                modfd(epollfd, sockfd, EPOLLOUT, TRIGMode);
+                utils.modfd(epollfd, sockfd, EPOLLOUT, TRIGMode);
                 return true;
             }
             unmap();
@@ -469,9 +487,9 @@ bool http_conn::write()
         bytes_to_send -= temp;
         if (bytes_have_send >= iv[0].iov_len)
         {
-            m_iv[0].iov_len = 0;
-            m_iv[1].iov_base = file_address + (bytes_have_send - write_idx);
-            m_iv[1].iov_len = bytes_to_send;
+            iv[0].iov_len = 0;
+            iv[1].iov_base = file_address + (bytes_have_send - write_idx);
+            iv[1].iov_len = bytes_to_send;
         }
         else
         {
@@ -482,7 +500,7 @@ bool http_conn::write()
         if (bytes_to_send <= 0)
         {
             unmap();
-            modfd(epollfd, sockfd, EPOLLIN, TRIGMode);
+            utils.modfd(epollfd, sockfd, EPOLLIN, TRIGMode);
 
             if (linger)
             {
@@ -502,7 +520,7 @@ void http_conn::process()
     HTTP_CODE read_ret = parse_content();
     if (read_ret == NO_REQUEST)
     {
-        modfd(epollfd, sockfd, EPOLLIN, TRIGMode);
+        utils.modfd(epollfd, sockfd, EPOLLIN, TRIGMode);
         return;
     }
     bool write_ret = process_write(read_ret);
@@ -510,7 +528,7 @@ void http_conn::process()
     {
         close_conn();
     }
-    modfd(epollfd, sockfd, EPOLLOUT, TRIGMode);
+    utils.modfd(epollfd, sockfd, EPOLLOUT, TRIGMode);
 }
 
 http_conn::HTTP_CODE http_conn::process_read()
@@ -567,9 +585,40 @@ void http_conn::close_conn(bool real_close)
     if (real_close && (sockfd != -1))
     {
         printf("close %d\n", sockfd);
-        removefd(epollfd, sockfd);
+        utils.removefd(epollfd, sockfd);
         sockfd = -1;
         user_count--;
+    }
+}
+
+//初始化http连接的读取表
+void initmysql_result(connection_pool *connPool)
+{
+    //先从连接池中取一个连接
+    MYSQL *mysql = NULL;
+    connectionRAII mysqlcon(&mysql, connPool);
+
+    //在user表中检索username，passwd数据，浏览器端输入
+    if (mysql_query(mysql, "SELECT username,passwd FROM user"))
+    {
+        // LOG_ERROR("SELECT error:%s\n", mysql_error(mysql));
+    }
+
+    //从表中检索完整的结果集
+    MYSQL_RES *result = mysql_store_result(mysql);
+
+    //返回结果集中的列数
+    int num_fields = mysql_num_fields(result);
+
+    //返回所有字段结构的数组
+    MYSQL_FIELD *fields = mysql_fetch_fields(result);
+
+    //从结果集中获取下一行，将对应的用户名和密码，存入map中
+    while (MYSQL_ROW row = mysql_fetch_row(result))
+    {
+        string temp1(row[0]);
+        string temp2(row[1]);
+        users[temp1] = temp2;
     }
 }
 

@@ -46,6 +46,9 @@ public:
     string database;
     Config config;
 
+    //listenfd
+    int listenfd;
+
     //epoll参数
     int epollfd;
 

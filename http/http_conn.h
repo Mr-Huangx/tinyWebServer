@@ -26,6 +26,7 @@
 
 #include"../utils/utils.h"
 #include "../CGImysql/sql_connection_pool.h"
+#include "../lock/my_lock.h"
 
 
 class http_conn{
@@ -88,14 +89,20 @@ public:
 
     void close_conn(bool real_close = true);//关闭一个socket连接
 
+    void initmysql_result(connection_pool *connPool);//初始化该http请求的数据库读取表
+
 private:
+    void init();//初始化当前http连接中的各项参数，check_state默认为读请求行
+
     LINE_STATUS parse_line();//从状态机，用于分析出一行内容
 
     HTTP_CODE parse_requestline(char* text);//分析请求行
 
     HTTP_CODE parse_headers(char *text);//分析头部字段
 
-    HTTP_CODE parse_content(char *text);//分析http请求的入口函数
+    HTTP_CODE parse_request_content(char *text);//分析request中的content部分
+
+    HTTP_CODE parse_content();//分析http请求的入口函数
 
     HTTP_CODE deal_request();//处理http请求
 
@@ -119,10 +126,6 @@ private:
 
     bool add_blank_line();
 
-    
-
-    
-
     void unmap();//用于释放使用mmap分配的内存空间
 
 public:
@@ -130,6 +133,8 @@ public:
     static int user_count;
     MYSQL* mysql;               //用于记录当前http请求由哪个连接池处理
     int state;                  //读为0，写为1
+    static map<string, string> users;
+    static My_lock mutex;
 
 private:
     int sockfd;                 //当前http请求使用的socket
@@ -138,7 +143,7 @@ private:
     long read_idx;                      //记录读的idx
     int checked_idx;
     int start_line;
-    int write_buf[WRITE_BUFFER_SIZE];
+    char write_buf[WRITE_BUFFER_SIZE];
     int write_idx;
     CHECK_STATE check_state;
     METHOD method;
@@ -148,7 +153,7 @@ private:
     char* url;
     char* version;
     char* host;
-    char* content_length;
+    long content_length;
     bool linger;
     char* file_address;
 
@@ -164,7 +169,7 @@ private:
     int close_log;
 
 
-    map<string, string> users;  //记录数据库中所有的用户和密码
+    // map<string, string> users;  //记录数据库中所有的用户和密码
     
     char sql_user[100];
     char sql_password[100];

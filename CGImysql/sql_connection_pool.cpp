@@ -34,9 +34,14 @@ connection_pool* connection_pool::getInstance(){
     return &connPool;
 }
 
-void connection_pool::init(string url, string user, string password, string database, int port, int sql_num):
-    url(url), user(user), password(password), port(port), databasename(database),maxConn(sql_num)
+void connection_pool::init(string url, string user, string password, string database, int port, int sql_num)
 {
+    this->url = url;
+    this->user = user;
+    this->password = password;
+    this->port = port;
+    this->databasename = database;
+    this->maxConn = sql_num;
 
     //根据sql_num的值，创建对应个mysql连接，并加入到connList中
     for(int i = 0; i < sql_num; i++){
@@ -77,7 +82,7 @@ MYSQL* connection_pool::getConnection(){
     pool_mutex.lock();
 
     con = connList.front();
-    conList.pop_front();
+    connList.pop_front();
 
     freeConn--;
     usedConn++;

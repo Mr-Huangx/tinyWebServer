@@ -34,7 +34,7 @@ void WebServer::init_connection_pool()
 void WebServer::init_threadPool()
 {
     //初始化线程池
-    threadPool = new threadPool<http_conn>(config.thread_num, config.max_request_num, config.actor_model)
+    threadPool = new ThreadPool<http_conn>(config.thread_num, config.max_request_num, config.actor_model)
 }
 
 
@@ -42,6 +42,7 @@ void WebServer::eventListen(){
     //创建listen socket，使用TCP连接
     int listenfd = socket(PF_INET, SOCK_STREAM, 0);
     assert(listenfd > 0);
+    this->listenfd = listenfd;
 
     //对于listenfd的关闭，采用默认方式，即如果有数据，则交给TCP模块负责
     if(0 == config.OPT_LINGER){
@@ -62,7 +63,7 @@ void WebServer::eventListen(){
 
     //设置服务器使用的端口号为可立即重用
     int flag = 1;
-    sersockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+    setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
 
     //将listenfd和address进行绑定
     assert(bind(listenfd, (struct sockaddr*)&address, sizeof(address)) >= 0);
@@ -73,7 +74,8 @@ void WebServer::eventListen(){
     //创建epoll句柄
     epollfd = epoll_create(5);
     Utils::epollfd = epollfd;
-    
+    http_conn::epollfd = epollfd;
+
     assert(epollfd != -1);
 
     //创建epoll事件表，用于接收有事件发生的epoll_event
@@ -193,7 +195,7 @@ void WebServer::deal_read_data(int sockfd){
 //处理sockfd需要发送数据
 void WebServer::deal_write_data(int sockfd){
     
-    if (1 == config.actormodel)
+    if (1 == config.actor_model)
     {
         //reactor模式
         while( !threadPool->append(users + sockfd, 1)){
