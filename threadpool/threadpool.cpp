@@ -31,7 +31,7 @@ ThreadPool<T>::ThreadPool(int actor_model, connection_pool* connPool, int thread
 
 template<typename T>
 bool ThreadPool<T>::append(T *request, int state){
-    queue_mutex.loc();
+    queue_mutex.lock();
     //先判断任务队列是否满
     if(task_queue.size() >= max_request_num){
         queue_mutex.unlock();
