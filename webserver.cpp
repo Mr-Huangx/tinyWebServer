@@ -24,10 +24,10 @@ WebServer::~WebServer()
 
 void WebServer::init(string user, string passwd, string database,Config config)
 {
-    user = user;
-    passwd = passwd;
-    database = database;
-    config = config;
+    this->user = user;
+    this->passwd = passwd;
+    this->database = database;
+    this->config = config;
 }
 
 void WebServer::init_connection_pool()
