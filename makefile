@@ -10,7 +10,7 @@ SRCS = main.cpp \
 	 	config.cpp
 OBJS = $(SRCS:.cpp=.o) 
 server: $(OBJS) 
-	$(CXX) -o $@ $^ -lpthread -L/usr/lib64/mysql -lmysqlclient 
+	$(CXX) -o -g $@ $^ -lpthread -L/usr/lib64/mysql -lmysqlclient 
 %.o: %.cpp 
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
