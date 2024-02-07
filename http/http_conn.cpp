@@ -602,6 +602,7 @@ void http_conn::initmysql_result(connection_pool *connPool)
     if (mysql_query(mysql, "SELECT username,passwd FROM user"))
     {
         // LOG_ERROR("SELECT error:%s\n", mysql_error(mysql));
+        cout<<"select出错"<<endl;
     }
 
     //从表中检索完整的结果集

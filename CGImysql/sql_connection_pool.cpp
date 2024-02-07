@@ -50,14 +50,14 @@ void connection_pool::init(string url, string user, string password, string data
 
         if(con == NULL){
             //创建连接失败
-
+            cout<<"创建连接失败"<<endl;
             exit(1);
         }
         con = mysql_real_connect(con, url.c_str(), user.c_str(), password.c_str(), databasename.c_str(), port, NULL, 0);
 
         if(con == NULL){
-
             //连接失败
+            cout<<"连接失败"<<endl;
             exit(1);
         }
 
