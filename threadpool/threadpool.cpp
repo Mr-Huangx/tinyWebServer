@@ -48,7 +48,7 @@ bool ThreadPool<T>::append(T *request, int state){
 
     //将http_conn的状态设置为传入的state状态，0为读，1为写
     request->state = state;
-    task_queue.push(request);
+    task_queue.push_back(request);
     queue_mutex.unlock();
 
     //唤醒一个线程，进行处理
@@ -64,7 +64,7 @@ bool ThreadPool<T>::append_p(T *request){
         queue_mutex.unlock();
         return false;
     }
-    task_queue.push(request);
+    task_queue.push_back(request);
     queue_mutex.unlock();
     queue_sem.post();
     return true;
