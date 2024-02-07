@@ -25,7 +25,7 @@ WebServer::~WebServer()
 void WebServer::init(string user, string passwd, string database,Config config)
 {
     this->user = user;
-    this->passwd = passwd;
+    this->password = passwd;
     this->database = database;
     this->config = config;
 }
