@@ -34,8 +34,14 @@ void WebServer::init_connection_pool()
 {
     //初始化连接池
     connPool = connection_pool::getInstance();//获取单例
-    connPool->init(config.ip, user, password, database, 3306, config.sql_num);
 
+    //输出所有参数
+    cout<<"config.ip :"<<config.ip<<endl;
+    cout<<"user :"<<user<<endl;
+    cout<<"password :"<<password<<endl;
+    cout<<"database:"<<database<<endl;
+    cout<<"config.sql_num"<<config.sql_num<<endl;
+    connPool->init(config.ip, user, password, database, 3306, config.sql_num);
     //初始化数据库读表
     users->initmysql_result(connPool);
 }
