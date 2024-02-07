@@ -6,6 +6,7 @@
 #include<error.h>
 #include<string>
 #include<stdlib.h>
+#include<iostream>
 
 #include"../lock/my_lock.h"
 #include"../lock/my_sem.h"
