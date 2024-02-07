@@ -33,7 +33,7 @@ Config::Config(){
     actor_model = 0;
 
     //ip地址,默认为空
-    ip = "127.0.0.1";
+    ip = "localhost";
 }
 
 void Config::init(int argc, char* argv[]){
