@@ -57,6 +57,7 @@ void connection_pool::init(string url, string user, string password, string data
 
         if(con == NULL){
             //连接失败
+            cout<<mysql_error(&con)<<endl;
             cout<<"连接失败"<<endl;
             exit(1);
         }
