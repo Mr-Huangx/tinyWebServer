@@ -1,7 +1,7 @@
 #include"config.h"
 #include"webserver.h"
-#include<iostream>
-using namespace std;
+
+
 
 int main(int argc, char *argv[]){
     //输入登陆mysql的账户和密码
