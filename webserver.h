@@ -53,8 +53,8 @@ public:
     int epollfd;
 
     //记录所有http连接,以及处理，使得WebServer服务器不显得那么臃肿
-    http_conn* users;
 
+    http_conn* users;
     //记录资源的路径
     char* source;
 

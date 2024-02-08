@@ -42,7 +42,7 @@ void WebServer::init_connection_pool()
     cout<<"database:"<<database<<endl;
     cout<<"config.sql_num"<<config.sql_num<<endl;
     connPool->init(config.ip, user, password, database, 3306, config.sql_num);
-    //初始化数据库读表
+    //初始化http_con类中静态成员变量users，记录数据库中的所有用户名和用户密码
     users->initmysql_result(connPool);
 }
 

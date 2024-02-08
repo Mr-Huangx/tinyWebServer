@@ -269,8 +269,8 @@ http_conn::HTTP_CODE http_conn::parse_content()
             default:
                 return INTERNAL_ERROR;
         }
-        return NO_REQUEST;
     }
+    return NO_REQUEST;
 }
 
 //处理http请求

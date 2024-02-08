@@ -29,8 +29,7 @@ Config::Config(){
     close_log = 0;
 
     // I/O模式选择
-    //默认为proactor，即通知就绪时间
-    actor_model = 0;
+    actor_model = 1;
 
     //ip地址,默认为空
     ip = "localhost";

@@ -133,7 +133,7 @@ public:
     static int user_count;
     MYSQL* mysql;               //用于记录当前http请求由哪个连接池处理
     int state;                  //读为0，写为1
-    static map<string, string> users;
+    static map<string, string> users;//记录数据库中所有用户的账户和密码
     static My_lock mutex;
 
 private:

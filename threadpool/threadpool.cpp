@@ -115,6 +115,9 @@ void ThreadPool<T>::run(){
                 }
                 else{
                     //数据读取失败，怎么办呢？
+                    cout_mutex.lock();
+                    cout<<"数据处理失败"<<endl;
+                    cout_mutex.unlock();
                 }
                 
             }
@@ -126,6 +129,7 @@ void ThreadPool<T>::run(){
         }
         else{
             //如果是proactor模型
+            //这个编写不对，因为这样的话，没有读取数据哇
             connectionRAII mysqlcon(&request->mysql, connPool);
             request->process();
         }
