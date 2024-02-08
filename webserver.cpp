@@ -11,7 +11,6 @@ WebServer::WebServer(){
     source = (char*)malloc(strlen(server_path) + strlen(root) + 1);
     strcpy(source, server_path);
     strcat(source, root);
-
 }
 
 WebServer::~WebServer()
@@ -39,8 +38,8 @@ void WebServer::init_connection_pool()
     cout<<"config.ip :"<<config.ip<<endl;
     cout<<"user :"<<user<<endl;
     cout<<"password :"<<password<<endl;
-    cout<<"database:"<<database<<endl;
-    cout<<"config.sql_num"<<config.sql_num<<endl;
+    cout<<"database :"<<database<<endl;
+    cout<<"config.sql_num :"<<config.sql_num<<endl;
     connPool->init(config.ip, user, password, database, 3306, config.sql_num);
     //初始化http_con类中静态成员变量users，记录数据库中的所有用户名和用户密码
     users->initmysql_result(connPool);
@@ -193,6 +192,7 @@ void WebServer::deal_read_data(int sockfd){
     //reactor模型
     if(config.actor_model == 1){
         //监听到读事件，将事件放入请求队列中，让逻辑处理单元进行处理
+        
         while(!threadPool->append(users+ sockfd, 0)){
             //如果加入失败，则可能是任务太多等待几秒再继续
         }

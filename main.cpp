@@ -16,14 +16,18 @@ int main(int argc, char *argv[]){
     config.init(argc, argv);
     cout<<"config init ok"<<endl;
 
+    //构造函数会初始化server中root目录的路径
     WebServer server;
 
 
     //初始化服务器的各项参数
+    //初始化server中连接mysql的user、passwd、database、config成员变量
     server.init(user, passwd, database, config);
     cout<<"webserver init ok"<<endl;
 
     //初始化数据库
+    //初始化连接池中mysql的ip地址，登录mysql服务器的账户、密码、数据库名、端口号、线程池数量
+    //初始化连接池中所有的用户
     server.init_connection_pool();
     cout<<"connection pool init ok"<<endl;
 

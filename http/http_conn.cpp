@@ -417,6 +417,7 @@ bool http_conn::read_once()
 {
     if (read_idx >= READ_BUFFER_SIZE)
     {
+        printf("read_idx >= read_buffer_size\n");
         return false;
     }
     int bytes_read = 0;
@@ -429,6 +430,7 @@ bool http_conn::read_once()
 
         if (bytes_read <= 0)
         {
+            printf("bytes_read <= 0\n");
             return false;
         }
 
@@ -442,12 +444,14 @@ bool http_conn::read_once()
             bytes_read = recv(sockfd, read_buf + read_idx, READ_BUFFER_SIZE - read_idx, 0);
             if (bytes_read == -1)
             {
+                printf("ET read failed\n");
                 if (errno == EAGAIN || errno == EWOULDBLOCK)
                     break;
                 return false;
             }
             else if (bytes_read == 0)
             {
+                printf("ET bytes_read == 0\n");
                 return false;
             }
             read_idx += bytes_read;
