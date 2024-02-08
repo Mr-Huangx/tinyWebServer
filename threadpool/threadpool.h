@@ -45,7 +45,4 @@ private:
     
 };
 
-template<typename T>
-My_lock ThreadPool<T>:: cout_mutex;
-
 #endif
