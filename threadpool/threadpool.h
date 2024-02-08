@@ -41,7 +41,7 @@ private:
     //连接池
     connection_pool* connPool; //连接池，给线程用于连接数据库使用
 
-    static My_lock cout_mutex; //用于互斥访问标准输出缓冲区
+    My_lock cout_mutex; //用于互斥访问标准输出缓冲区
     
 };
 

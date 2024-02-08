@@ -18,7 +18,7 @@
 #include"config.h"
 #include"utils/utils.h"
 #include"./http/http_conn.cpp"
-#include"./threadpool/threadpool.cpp"
+#include"./threadpool/threadpool.h"
 #include"./CGImysql/sql_connection_pool.h"
 
 

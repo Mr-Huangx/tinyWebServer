@@ -2,9 +2,6 @@
 
 
 template<typename T>
-My_lock ThreadPool<T>:: cout_mutex;
-
-template<typename T>
 ThreadPool<T>::ThreadPool(int actor_model, connection_pool* connPool, int thread_num, int max_requests):thread_num(thread_num), max_request_num(max_requests), threads(NULL), actor_model(actor_model),connPool(connPool)
 {
 
