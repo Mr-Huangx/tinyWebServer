@@ -157,7 +157,7 @@ bool WebServer::deal_client_connect(){
         }
 
         //将connfd加入到epollfd中
-        utils.addfd(epollfd, connfd, false, config.CONNTrigmode);
+        utils.addfd(epollfd, connfd, true, config.CONNTrigmode);
 
         //将http记录到users数组中
         users[connfd].init(connfd, client_address, source, config.CONNTrigmode, config.close_log, user, password, database);
@@ -178,7 +178,7 @@ bool WebServer::deal_client_connect(){
                 return false;
             }
             //将connfd加入到epollfd中
-            utils.addfd(epollfd, connfd, false, config.CONNTrigmode);
+            utils.addfd(epollfd, connfd, true, config.CONNTrigmode);
 
             //将http记录到users数组中
             users[connfd].init(connfd, client_address, source, config.CONNTrigmode, config.close_log, user, password, database);
@@ -196,7 +196,7 @@ void WebServer::deal_read_data(int sockfd){
     if(config.actor_model == 1){
         //监听到读事件，将事件放入请求队列中，让逻辑处理单元进行处理
         printf("加入客户端时的sockfd:%d\n", sockfd);
-        while(!threadPool->append(users+ sockfd, 0)){
+        while(!threadPool->append(users + sockfd, 0)){
             //如果加入失败，则可能是任务太多等待几秒再继续
         }
 
