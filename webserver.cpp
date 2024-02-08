@@ -192,7 +192,7 @@ void WebServer::deal_read_data(int sockfd){
     //reactor模型
     if(config.actor_model == 1){
         //监听到读事件，将事件放入请求队列中，让逻辑处理单元进行处理
-        
+        printf("加入客户端时的sockfd:%d\n", sockfd);
         while(!threadPool->append(users+ sockfd, 0)){
             //如果加入失败，则可能是任务太多等待几秒再继续
         }

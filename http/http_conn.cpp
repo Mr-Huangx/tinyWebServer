@@ -424,13 +424,15 @@ bool http_conn::read_once()
 
     //LT读取数据
     if (0 == TRIGMode)
-    {
+    {   
+        printf("进行数据读取时,sock的编号为:%d\n", sockfd);
         bytes_read = recv(sockfd, read_buf + read_idx, READ_BUFFER_SIZE - read_idx, 0);
         read_idx += bytes_read;
 
         if (bytes_read <= 0)
         {
             printf("bytes_read <= 0\n");
+            exit(0);
             return false;
         }
 
