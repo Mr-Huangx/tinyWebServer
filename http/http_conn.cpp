@@ -526,6 +526,7 @@ void http_conn::process()
     HTTP_CODE read_ret = parse_content();
     if (read_ret == NO_REQUEST)
     {
+        printf("当前任务没有http_request，对socket \"%d\"进行重新处理\n", sockfd);
         utils.modfd(epollfd, sockfd, EPOLLIN, TRIGMode);
         return;
     }
@@ -534,6 +535,7 @@ void http_conn::process()
     {
         close_conn();
     }
+    printf("处理完当前任务后，对socket \"%d\"进行重新处理\n", sockfd);
     utils.modfd(epollfd, sockfd, EPOLLOUT, TRIGMode);
 }
 

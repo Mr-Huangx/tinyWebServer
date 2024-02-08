@@ -126,6 +126,9 @@ void ThreadPool<T>::run(){
                 //如果是写操作
                 //写操作直接发送数据给客户端，所以不需要连接池帮助
                 request->write();
+
+                //写完之后需要把sockfd重新加入到epollfd中
+                
             }
         }
         else{
