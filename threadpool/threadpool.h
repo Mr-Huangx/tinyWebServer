@@ -4,12 +4,14 @@
 #include<list>
 #include<pthread.h>
 #include<exception>
+#include<iostream>
 
 #include"./lock/my_cond.h"
 #include"./lock/my_lock.h"
 #include"./lock/my_sem.h"
 #include"../CGImysql/sql_connection_pool.h"
 
+using namespace std;
 
 template<typename T>
 class ThreadPool{
