@@ -97,7 +97,10 @@ void WebServer::eventListen(){
 
     //将listenfd加入到epollfd中
     utils.addfd(epollfd, listenfd, false, config.LISTENTrigmode);
-
+        
+    //debug listenfd
+    cout<<"listen fd:"<<listenfd<<endl;
+    
     //进入循环监听任务
     bool stop_server = false;
     while(!stop_server){
@@ -145,7 +148,6 @@ bool WebServer::deal_client_connect(){
         int connfd = accept(listenfd, (struct sockaddr*)&client_address, &client_addrlength);
         if(connfd < 0){
             //建立连接失败
-
             return false;
         }
 
@@ -159,6 +161,7 @@ bool WebServer::deal_client_connect(){
 
         //将http记录到users数组中
         users[connfd].init(connfd, client_address, source, config.CONNTrigmode, config.close_log, user, password, database);
+        
         http_conn::user_count++;
     }
     else{
