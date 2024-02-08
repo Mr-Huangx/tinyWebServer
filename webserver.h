@@ -17,7 +17,7 @@
 
 #include"config.h"
 #include"utils/utils.h"
-#include"./http/http_conn.h"
+#include"./http/http_conn.cpp"
 #include"./threadpool/threadpool.cpp"
 #include"./CGImysql/sql_connection_pool.h"
 
@@ -68,6 +68,5 @@ public:
     Utils utils;
 };
 
-template<typename T>
-My_lock ThreadPool<T>:: cout_mutex;
+
 #endif
