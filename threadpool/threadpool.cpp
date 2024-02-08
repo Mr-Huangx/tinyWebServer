@@ -1,7 +1,6 @@
 #include "threadpool.h"
 
-template<typename T>
-My_lock ThreadPool<T>:: cout_mutex;
+
 
 
 template<typename T>

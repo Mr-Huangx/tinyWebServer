@@ -44,6 +44,7 @@ private:
     static My_lock cout_mutex; //用于互斥访问标准输出缓冲区
     
 };
-
+template<typename T>
+My_lock ThreadPool<T>:: cout_mutex;
 
 #endif
