@@ -105,7 +105,7 @@ void ThreadPool<T>::run(){
 
         //解锁任务队列互斥量
         queue_mutex.unlock();
-        
+
         if(!request) continue;
         if(actor_model == 1){
             //如果是反应堆模型(reactor)
@@ -116,12 +116,12 @@ void ThreadPool<T>::run(){
                     //由于读操作之后可能需要根据数据库判断用户是否存在，因此需要连接池的帮助
                     // request->imporv = 1;//好像没啥用
                     connectionRAII mysqlcon(&request->mysql, connPool);
-                    log->append("正在处理http请求\n", 0);
+                    log->write("正在处理http请求\n", 0);
                     request->process();
                 }
                 else{
                     //数据读取失败，怎么办呢？
-                    log->append("http请求处理失败\n", 1);
+                    log->write("http请求处理失败\n", 1);
                 }
                 
             }
