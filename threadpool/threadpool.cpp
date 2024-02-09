@@ -114,13 +114,14 @@ void ThreadPool<T>::run(){
                     //由于读操作之后可能需要根据数据库判断用户是否存在，因此需要连接池的帮助
                     // request->imporv = 1;//好像没啥用
                     connectionRAII mysqlcon(&request->mysql, connPool);
+                    cout<<"开始处理http请求\n";
                     request->process();
                 }
                 else{
                     //数据读取失败，怎么办呢？
-                    cout_mutex.lock();
+                    // cout_mutex.lock();
                     cout<<"数据处理失败"<<endl;
-                    cout_mutex.unlock();
+                    // cout_mutex.unlock();
                 }
                 
             }
