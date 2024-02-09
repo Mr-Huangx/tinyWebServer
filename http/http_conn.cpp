@@ -425,7 +425,6 @@ bool http_conn::read_once()
     //LT读取数据
     if (0 == TRIGMode)
     {   
-        printf("进行数据读取时,sock的编号为:%d\n", sockfd);
         bytes_read = recv(sockfd, read_buf + read_idx, READ_BUFFER_SIZE - read_idx, 0);
         read_idx += bytes_read;
 
@@ -537,7 +536,7 @@ void http_conn::process()
     {
         close_conn();
     }
-    printf("处理完当前任务后，对socket \"%d\", 现在将其事件类型进行修改，重新放入epollwait中\n", sockfd);
+    printf("处理完当前任务，对socket \"%d\", 重新放入epollfd中\n", sockfd);
     utils.modfd(epollfd, sockfd, EPOLLOUT, TRIGMode);
 }
 

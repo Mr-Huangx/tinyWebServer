@@ -130,14 +130,14 @@ void WebServer::eventListen(){
             }
             //处理客户端发来数据
             else if(events[i].events & EPOLLIN){
-                cout<<"task:\n";
-                cout<<"epoll_wait发现有客户端socket:"<< sockfd <<"发来请求，将请求放入队列中，等待处理：\n";
+                cout<<"read task:\n";
+                cout<<"epoll_wait发现有客户端socket:"<< sockfd <<"发来请求，将请求放入队列中\n";
                 deal_read_data(sockfd);
             }
             //处理发送数据
             else if(events[i].events & EPOLLOUT){
-                cout<<"task:\n";
-                cout<<"epoll_wait发现有socket:" << sockfd << "需要发送数据，将请求放入队列中，等待处理:\n";
+                cout<<"write task:\n";
+                cout<<"epoll_wait发现有客户端socket:" << sockfd << "需要发送数据，将请求放入队列中\n";
                 deal_write_data(sockfd);
             }
         }
@@ -202,11 +202,12 @@ void WebServer::deal_read_data(int sockfd){
     //reactor模型
     if(config.actor_model == 1){
         //监听到读事件，将事件放入请求队列中，让逻辑处理单元进行处理
-        printf("deal_read_data函数处理时的sockfd:%d\n", sockfd);
+        printf("deal_read_data函数处理sockfd:%d\n", sockfd);
         while(!threadPool->append(users + sockfd, 0)){
             //如果加入失败，则可能是任务太多等待几秒再继续
             printf("sockfd:%d加入任务队列失败\n", sockfd);
         }
+        pintf("deal_read_data函数加入任务成功");
 
     }
     else{
