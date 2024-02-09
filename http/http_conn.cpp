@@ -534,6 +534,8 @@ void http_conn::process()
     bool write_ret = process_write(read_ret);
     if (!write_ret)
     {
+        //write出错，直接关闭当前连接
+        printf("处理当前任务的时候，write出错，关闭socket:%d\n", sockfd);
         close_conn();
     }
     printf("处理完当前任务，对socket \"%d\", 重新放入epollfd中\n", sockfd);
