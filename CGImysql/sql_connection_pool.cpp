@@ -105,6 +105,7 @@ bool connection_pool::releaseConnection(MYSQL* con){
     freeConn++;
 
     pool_mutex.unlock();
+    sem.post();
     return true;
 }
 
