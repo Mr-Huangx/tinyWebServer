@@ -95,7 +95,7 @@ void WebServer::eventListen(){
     //创建epoll事件表，用于接收有事件发生的epoll_event
     epoll_event events[MAX_EVENT_NUMBER];
 
-    //将listenfd加入到epollfd中
+    //将listenfd加入到epollfd中,同时不采用ONESHOT参数，因为这个sockfd上的任务并不会被其他线程所拿到
     utils.addfd(epollfd, listenfd, false, config.LISTENTrigmode);
         
     //debug listenfd
@@ -121,16 +121,21 @@ void WebServer::eventListen(){
             if(sockfd == listenfd){
                 //如果是listenfd有事件发生，即有新的客户连接
                 bool flag = deal_client_connect();
+                //输出日志
+                cout<<"listenfd检测到有新的连接到来，并建立连接，客户端socket"<<sockfd<<endl;
                 if(flag == false){
+                    cout<<"listenfd在处理新的连接时出错了"<<endl;
                     continue;
                 }
             }
             //处理客户端发来数据
             else if(events[i].events & EPOLLIN){
+                cout<<"epoll_wait发现有客户端发来请求，将请求放入队列中，等待处理：\n";
                 deal_read_data(sockfd);
             }
             //处理发送数据
             else if(events[i].events & EPOLLOUT){
+                cout<<"epoll_wait发现有socket需要发送数据，将请求放入队列中，等待处理:\n";
                 deal_write_data(sockfd);
             }
         }
@@ -195,9 +200,10 @@ void WebServer::deal_read_data(int sockfd){
     //reactor模型
     if(config.actor_model == 1){
         //监听到读事件，将事件放入请求队列中，让逻辑处理单元进行处理
-        printf("加入客户端时的sockfd:%d\n", sockfd);
+        printf("deal_read_data函数处理时的sockfd:%d\n", sockfd);
         while(!threadPool->append(users + sockfd, 0)){
             //如果加入失败，则可能是任务太多等待几秒再继续
+            printf("sockfd:%d加入任务队列失败\n", sockfd);
         }
 
     }
@@ -205,7 +211,11 @@ void WebServer::deal_read_data(int sockfd){
         //proactor模型，通知就绪事件
         if(users[sockfd].read_once()){
             //由主进程一次性将数据处理完，然后通知程序进行后续操作
-            while(!threadPool->append_p(users+sockfd));
+            printf("deal_read_data函数处理时的sockfd:%d\n", sockfd);
+            while(!threadPool->append_p(users+sockfd)){
+                //如果加入失败，则可能是任务太多等待几秒再继续
+                printf("sockfd:%d加入任务队列失败\n", sockfd);
+            }
         }
     }
 }

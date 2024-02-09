@@ -43,6 +43,8 @@ bool ThreadPool<T>::append(T *request, int state){
     queue_mutex.lock();
     //先判断任务队列是否满
     if(task_queue.size() >= max_request_num){
+        //如果加入失败，则可能是任务太多等待几秒再继续
+        printf("thread::append : sockfd:%d加入任务队列满了\n", sockfd);
         queue_mutex.unlock();
         return false;
     }
@@ -128,7 +130,7 @@ void ThreadPool<T>::run(){
                 request->write();
 
                 //写完之后需要把sockfd重新加入到epollfd中
-                
+
             }
         }
         else{
