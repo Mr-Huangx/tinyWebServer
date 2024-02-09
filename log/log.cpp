@@ -43,7 +43,8 @@ void Log::write(string str, int level){
             break;
     }
     
-    outputFile<<str;
+    outputFile<<str<<endl;
+
 }
 
 void* Log::flush_log_thread(void* arg){

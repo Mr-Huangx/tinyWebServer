@@ -211,7 +211,6 @@ void WebServer::deal_read_data(int sockfd){
     //reactor模型
     if(config.actor_model == 1){
         //监听到读事件，将事件放入请求队列中，让逻辑处理单元进行处理
-        cout<<"deal_read_data函数处理sockfd:" + to_string(sockfd) + "\n";
         while(!threadPool->append(users + sockfd, 0)){
             //如果加入失败，则可能是任务太多等待几秒再继续
             printf("sockfd:%d加入任务队列失败\n", sockfd);
@@ -223,7 +222,6 @@ void WebServer::deal_read_data(int sockfd){
         //proactor模型，通知就绪事件
         if(users[sockfd].read_once()){
             //由主进程一次性将数据处理完，然后通知程序进行后续操作
-            printf("deal_read_data函数处理时的sockfd:%d\n", sockfd);
             while(!threadPool->append_p(users+sockfd)){
                 //如果加入失败，则可能是任务太多等待几秒再继续
                 printf("sockfd:%d加入任务队列失败\n", sockfd);

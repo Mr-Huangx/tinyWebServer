@@ -105,7 +105,7 @@ void ThreadPool<T>::run(){
 
         //解锁任务队列互斥量
         queue_mutex.unlock();
-
+        
         if(!request) continue;
         if(actor_model == 1){
             //如果是反应堆模型(reactor)
