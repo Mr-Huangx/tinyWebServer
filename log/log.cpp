@@ -59,6 +59,7 @@ void Log::run(){
         que_mutex.lock();
 
         if(!write_que.size()){
+            que_mutex.unlock();
             continue;
         }
         string str = write_que.front().first;
