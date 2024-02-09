@@ -24,6 +24,9 @@ int main(int argc, char *argv[]){
     //初始化日志文件
     server.init_log("log.txt", false);
 
+    //测试log是否能使用
+    server.log->append("test", 0);
+
 
     //初始化server中连接mysql的user、passwd、database、config成员变量
     server.init(user, passwd, database, config);

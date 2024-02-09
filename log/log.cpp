@@ -70,7 +70,7 @@ void Log::run(){
     }
 }
 
-void Log::append(string str, int level){
+void Log::append(string str, int level = 0){
     que_mutex.lock();
     write_que.push(pair<string, int>(str, level));
     que_mutex.unlock();
