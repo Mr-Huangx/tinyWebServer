@@ -55,6 +55,7 @@ void* Log::flush_log_thread(void* arg){
 
 void Log::run(){
     while(1){
+        sem.wait();
         que_mutex.lock();
 
         if(!write_que.size()){
@@ -73,4 +74,5 @@ void Log::append(string str, int level){
     que_mutex.lock();
     write_que.push(pair<string, int>(str, level));
     que_mutex.unlock();
+    sem.post();
 }

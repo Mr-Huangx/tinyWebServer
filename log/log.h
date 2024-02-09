@@ -7,6 +7,7 @@
 #include<queue>
 
 #include"../lock/my_lock.h"
+#include"../lock/my_sem.h"
 
 using namespace std;
 
@@ -32,6 +33,7 @@ private:
     bool is_async;
     ofstream outputFile;
     My_lock que_mutex;      //互斥访问write_que的互斥量
+    My_sem sem;             //同步生产者和消费者
     queue<pair<string, int>> write_que;
 };
 
