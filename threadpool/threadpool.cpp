@@ -117,7 +117,7 @@ void ThreadPool<T>::run(){
                     //将输出输入log文件
                     std::ofstream outputFile("log.txt");
                     if(outputFile.is_open()){
-                        outputFile << "开始处理http请求\n";
+                        outputFile << string("开始处理http请求\n");
                         outputFile.close();
                     }
                     request->process();
@@ -126,7 +126,7 @@ void ThreadPool<T>::run(){
                     //数据读取失败，怎么办呢？
                     std::ofstream outputFile("log.txt");
                     if(outputFile.is_open()){
-                        outputFile << "数据处理失败\n";
+                        outputFile << string("数据处理失败\n");
                         outputFile.close();
                     }
 
