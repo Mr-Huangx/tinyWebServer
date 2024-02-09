@@ -5,6 +5,7 @@
 #include<pthread.h>
 #include<exception>
 #include<iostream>
+#include<iostream>
 
 #include"./lock/my_cond.h"
 #include"./lock/my_lock.h"
