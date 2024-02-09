@@ -432,10 +432,9 @@ bool http_conn::read_once()
         if (bytes_read <= 0)
         {
             printf("bytes_read <= 0\n");
-            exit(0);
             return false;
         }
-
+        printf("进行数据读取完成,sock传输数据为:%s\n", read_buf + read_idx);
         return true;
     }
     //ET读数据
@@ -465,6 +464,7 @@ bool http_conn::read_once()
 bool http_conn::write()
 {
     //向客户端发送数据
+    printf("向客户端socket:%d 发送数据\n", sockfd);
     int temp = 0;
 
     if (bytes_to_send == 0)
@@ -482,6 +482,7 @@ bool http_conn::write()
         {
             if (errno == EAGAIN)
             {
+                printf("writev调用返回值-0， socket:%d 重新被放入epollfd中\n", sockfd);
                 utils.modfd(epollfd, sockfd, EPOLLOUT, TRIGMode);
                 return true;
             }
@@ -506,6 +507,7 @@ bool http_conn::write()
         if (bytes_to_send <= 0)
         {
             unmap();
+            printf("发送成功socket:%d 重新被放入epollfd中\n", sockfd);
             utils.modfd(epollfd, sockfd, EPOLLIN, TRIGMode);
 
             if (linger)
@@ -535,7 +537,7 @@ void http_conn::process()
     {
         close_conn();
     }
-    printf("处理完当前任务后，对socket \"%d\"进行重新处理\n", sockfd);
+    printf("处理完当前任务后，对socket \"%d\", 现在将其事件类型进行修改，重新放入epollwait中\n", sockfd);
     utils.modfd(epollfd, sockfd, EPOLLOUT, TRIGMode);
 }
 

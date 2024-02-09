@@ -122,7 +122,7 @@ void WebServer::eventListen(){
                 //如果是listenfd有事件发生，即有新的客户连接
                 bool flag = deal_client_connect();
                 //输出日志
-                cout<<"listenfd检测到有新的连接到来，并建立连接，客户端socket"<<sockfd<<endl;
+                // cout<<"listenfd检测到有新的连接到来，并建立连接，客户端socket"<<sockfd<<endl;
                 if(flag == false){
                     cout<<"listenfd在处理新的连接时出错了"<<endl;
                     continue;
@@ -130,12 +130,12 @@ void WebServer::eventListen(){
             }
             //处理客户端发来数据
             else if(events[i].events & EPOLLIN){
-                cout<<"epoll_wait发现有客户端发来请求，将请求放入队列中，等待处理：\n";
+                cout<<"epoll_wait发现有客户端socket:"<< sockfd <<"发来请求，将请求放入队列中，等待处理：\n";
                 deal_read_data(sockfd);
             }
             //处理发送数据
             else if(events[i].events & EPOLLOUT){
-                cout<<"epoll_wait发现有socket需要发送数据，将请求放入队列中，等待处理:\n";
+                cout<<"epoll_wait发现有socket:" << sockfd << "需要发送数据，将请求放入队列中，等待处理:\n";
                 deal_write_data(sockfd);
             }
         }
@@ -229,6 +229,7 @@ void WebServer::deal_write_data(int sockfd){
         while( !threadPool->append(users + sockfd, 1)){
             //如果加入失败，则可能是任务太多等待几秒再继续
         }
+        cout<<"deal_write_data函数加入写任务成功\n";
     }
     else
     {
