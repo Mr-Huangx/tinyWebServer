@@ -7,7 +7,8 @@ SRCS = main.cpp \
    		./threadpool/threadpool.cpp \
     	./utils/utils.cpp \
 	 	webserver.cpp \
-	 	config.cpp
+	 	config.cpp \
+		./log/log.cpp
 OBJS = $(SRCS:.cpp=.o) 
 server: $(OBJS) 
 	$(CXX) -o $@ $^ -g -lpthread -L/usr/lib64/mysql -lmysqlclient 
