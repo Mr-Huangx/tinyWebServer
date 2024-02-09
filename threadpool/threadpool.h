@@ -11,6 +11,7 @@
 #include"./lock/my_lock.h"
 #include"./lock/my_sem.h"
 #include"../CGImysql/sql_connection_pool.h"
+#include"./log/log.h"
 
 using namespace std;
 
@@ -26,10 +27,9 @@ public:
     
 private:
     static void *worker(void* arg); ////每个线程的拿到task后的回调函数
+
     void run();//线程池不断运行，获得任务队列中的任务进行处理
     
-    
-
 
 private:
     int thread_num;         //线程池中，线程数量
@@ -40,6 +40,9 @@ private:
     My_sem queue_sem;       //任务队列信号量，用于消费者-生产者模型
 
     int actor_model;        //I/O模型[reactore, proactor]
+
+    //日志对象
+    Log* log;
 
     //连接池
     connection_pool* connPool; //连接池，给线程用于连接数据库使用

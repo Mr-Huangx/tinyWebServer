@@ -21,6 +21,10 @@ int main(int argc, char *argv[]){
 
 
     //初始化服务器的各项参数
+    //初始化日志文件
+    server.init_log("log.txt", false);
+
+
     //初始化server中连接mysql的user、passwd、database、config成员变量
     server.init(user, passwd, database, config);
     cout<<"webserver init ok"<<endl;

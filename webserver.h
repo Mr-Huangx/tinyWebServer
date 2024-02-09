@@ -20,6 +20,7 @@
 #include"./http/http_conn.h"
 #include"./threadpool/threadpool.cpp"
 #include"./CGImysql/sql_connection_pool.h"
+#include"./log/log.h"
 
 
 using namespace std;
@@ -32,6 +33,7 @@ public:
     WebServer();
     ~WebServer();
     void init(string user, string passwd, string database,Config config);
+    void init_log(string file, bool asy);//初始化日志文件
     void init_connection_pool();//初始化连接池
     void init_threadPool();//初始化线程池
     void eventListen();//创建listen socket同时进入循环监听状态
@@ -52,8 +54,10 @@ public:
     //epoll参数
     int epollfd;
 
-    //记录所有http连接,以及处理，使得WebServer服务器不显得那么臃肿
+    //记录log
+    Log* log;
 
+    //记录所有http连接,以及处理，使得WebServer服务器不显得那么臃肿
     http_conn* users;
     //记录资源的路径
     char* source;

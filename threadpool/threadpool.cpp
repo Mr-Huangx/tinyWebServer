@@ -28,6 +28,8 @@ ThreadPool<T>::ThreadPool(int actor_model, connection_pool* connPool, int thread
             throw std::exception();
         }
     }
+
+    log = Log::getLog();
 }
 
 //析构函数
@@ -114,22 +116,12 @@ void ThreadPool<T>::run(){
                     //由于读操作之后可能需要根据数据库判断用户是否存在，因此需要连接池的帮助
                     // request->imporv = 1;//好像没啥用
                     connectionRAII mysqlcon(&request->mysql, connPool);
-                    //将输出输入log文件
-                    std::ofstream outputFile("log.txt");
-                    if(outputFile.is_open()){
-                        outputFile << string("开始处理http请求\n");
-                        outputFile.close();
-                    }
+                    log->append("正在处理http请求\n", 0);
                     request->process();
                 }
                 else{
                     //数据读取失败，怎么办呢？
-                    std::ofstream outputFile("log.txt");
-                    if(outputFile.is_open()){
-                        outputFile << string("数据处理失败\n");
-                        outputFile.close();
-                    }
-
+                    log->append("http请求处理失败\n", 1);
                 }
                 
             }

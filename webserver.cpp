@@ -29,6 +29,15 @@ void WebServer::init(string user, string passwd, string database,Config config)
     this->config = config;
 }
 
+void WebServer::init_log(string file, bool asy)
+{
+    //初始化日志文件
+    Log* temp_log = Log::getLog();
+    temp_log->init(file, asy);
+    
+    log = temp_log;
+}
+
 void WebServer::init_connection_pool()
 {
     //初始化连接池
