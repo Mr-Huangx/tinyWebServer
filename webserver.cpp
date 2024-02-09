@@ -130,11 +130,13 @@ void WebServer::eventListen(){
             }
             //处理客户端发来数据
             else if(events[i].events & EPOLLIN){
+                cout<<"task:\n";
                 cout<<"epoll_wait发现有客户端socket:"<< sockfd <<"发来请求，将请求放入队列中，等待处理：\n";
                 deal_read_data(sockfd);
             }
             //处理发送数据
             else if(events[i].events & EPOLLOUT){
+                cout<<"task:\n";
                 cout<<"epoll_wait发现有socket:" << sockfd << "需要发送数据，将请求放入队列中，等待处理:\n";
                 deal_write_data(sockfd);
             }
