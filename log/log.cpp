@@ -4,7 +4,7 @@ Log::~Log(){
     outputFile.close();
 }
 
-void Log::init(string file, bool asy = false){
+void Log::init(string file, bool asy){
     //is_async==true表示异步写
     fileName = file;
     is_async = asy;
@@ -41,7 +41,7 @@ void Log::write(string str, int level){
         case 1:
             str = "bug:\n" + str;
             break
-    }
+    };
     
     outputFile<<str;
 }
@@ -49,6 +49,7 @@ void Log::write(string str, int level){
 void* Log::flush_log_thread(void* arg){
     Log* log = (Log*)arg;
     log->run();
+    return log;
 }
 
 void Log::run(){
