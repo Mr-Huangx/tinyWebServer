@@ -40,8 +40,8 @@ void Log::write(string str, int level){
 
         case 1:
             str = "bug:\n" + str;
-            break
-    };
+            break;
+    }
     
     outputFile<<str;
 }
