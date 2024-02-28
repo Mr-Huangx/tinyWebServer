@@ -44,6 +44,7 @@ void Log::write(string str, int level){
     }
     
     outputFile<<str;
+    cout<<"write ok\n";
 
 }
 
