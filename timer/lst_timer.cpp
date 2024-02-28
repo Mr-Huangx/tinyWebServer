@@ -51,8 +51,8 @@ void sort_timer_lst::adjust_timer(util_timer* timer){
     //如果目标定时器不是链表的头结点，则将该定时器从链表中取出，然后插入其原来所在位置后面的部分链表中
     else{
         timer->prev->next = timer->next;
-        timer->next->pre = timer->prev;
-        add(timer, timer->next);
+        timer->next->prev = timer->prev;
+        add_timer(timer, timer->next);
     }
 }
 
@@ -95,7 +95,7 @@ void sort_timer_lst::tick(){
         return;
     }
 
-    time_t cur = timer(NULL);//获取系统当前时间
+    time_t cur = time(NULL);//获取系统当前时间
     util_timer* temp = head;
     //从头结点开始依次处理每个定时器，直到遇到第一个未到期的定时器
     while(temp){
@@ -103,7 +103,7 @@ void sort_timer_lst::tick(){
             break;
         }
         //调用定时器的回调函数，以执行定时任务
-        temp->cb_func(temp->user->data);
+        temp->cb_func(temp->user_data);
 
         //删除定时器
         head = temp->next;
