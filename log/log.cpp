@@ -43,7 +43,7 @@ void Log::write(string str, int level){
             break;
     }
     
-    outputFile<<str;
+    // outputFile<<str;
     cout<<"write ok\n";
 
 }
