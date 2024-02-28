@@ -23,7 +23,7 @@ Config::Config(){
     sql_num = 4;
 
     //线程池中线程数量，默认4个
-    thread_num = 4;
+    thread_num = 1;
 
     //是否关闭日志，默认不关闭
     close_log = 0;

@@ -192,8 +192,9 @@ void WebServer::eventListen(){
         if(timeout){
                 //处理当前不活跃的socket
                 
-                utils.timer_handler();
-                timeout = false;
+                cout<<"timeout 触发\n";
+                // utils.timer_handler();
+                // timeout = false;
             }
     }
     
@@ -243,12 +244,14 @@ void WebServer::deal_signal(bool& timeout, bool& stop_server){
                 //timeout变量标记有定时任务需要处理，但不立即处理定时任务，因为定时任务的优先级不是很高，我们优先处理其他更加重要的任务
             case SIGALRM:
             {
+                cout<<"SIGALRM触发\n";
                 timeout = true;
                 break;
             }
                 //终端发送的指令是终止服务，则关闭服务器
             case SIGTERM:
             {
+                cout<<"SIGTER关闭服务器\n";
                 stop_server = true;
             }
             
