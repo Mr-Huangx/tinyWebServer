@@ -7,11 +7,11 @@
 #include<iostream>
 #include<fstream>
 
-#include"./lock/my_cond.h"
-#include"./lock/my_lock.h"
-#include"./lock/my_sem.h"
+#include"../lock/my_cond.h"
+#include"../lock/my_lock.h"
+#include"../lock/my_sem.h"
 #include"../CGImysql/sql_connection_pool.h"
-#include"./log/log.h"
+#include"../log/log.h"
 
 using namespace std;
 
