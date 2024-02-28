@@ -36,8 +36,7 @@ struct client_data{
     sockaddr_in address;
     int sockfd;
     util_timer* timer;  //只能使用指针，因为编译器还不知道这个类
-    char buf[BUFFER_SIZE];
-}
+};
 
 //定时器类
 class util_timer{
@@ -50,7 +49,7 @@ public:
     client_data* user_data;
     util_timer* prev;
     util_timer* next;
-}
+};
 
 //定时器链表。升序、双向链表，带有头结点和尾节点
 class sort_timer_lst
@@ -71,7 +70,7 @@ private:
 private:
     util_timer* head;
     util_timer* tail;
-}
+};
 
 
 

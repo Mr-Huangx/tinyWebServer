@@ -56,7 +56,7 @@ void Utils::sig_handler(int sig)
 {
     int save_errno = errno;
     int msg = sig;
-    send(pipedf[1], (char*)&msg, 1, 0);
+    send(pipefd[1], (char*)&msg, 1, 0);
     errno = save_errno;
 }
 
@@ -67,7 +67,7 @@ void Utils::addsig(int sig, void(handler)(int), bool restart){
     sa.sa_handler = handler;
     if(restart) sa.sa_flags |= SA_RESTART;
     sigfillset(&sa.sa_mask);
-    assert(sigaction(fig, &sa, NULL) != -1);
+    assert(sigaction(sig, &sa, NULL) != -1);
 }
 
 //定时任务，不断触发SIGALRM信号
