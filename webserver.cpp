@@ -171,7 +171,7 @@ void WebServer::eventListen(){
             //处理发送数据
             else if(events[i].events & EPOLLOUT){
                 cout<<"write task:\n";
-                cout<<"epoll_wait发现有客户端socket:" << sockfd << "需要发送数据，将请求放入队列中\n";
+                cout<<"epoll_wait socket:" << sockfd << "需要发送数据，将请求放入队列中\n";
                 deal_write_data(sockfd);
             }
             //1、检测到TCP连接被对方关闭
@@ -341,7 +341,7 @@ void WebServer::deal_read_data(int sockfd){
                 break;
             }
         }
-
+        cout<<"deal_read_data函数退出\n";
     }
     else{
         //proactor模型，通知就绪事件
