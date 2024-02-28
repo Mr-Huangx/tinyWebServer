@@ -385,7 +385,7 @@ void WebServer::deal_write_data(int sockfd){
         cout<<"deal_write_data函数加入写任务成功\n";
     
         while(true){
-            if(1 == users[sockfd].imrov){
+            if(1 == users[sockfd].improv){
                 users[sockfd].improv = 0;
                 break;
             }
