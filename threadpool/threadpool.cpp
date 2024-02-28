@@ -117,9 +117,9 @@ void ThreadPool<T>::run(){
                     request->improv = 1;//好像没啥用
                     connectionRAII mysqlcon(&request->mysql, connPool);
                     // log->write("正在处理http请求\n", 0);
-
+                    cout<<"完成1次\n";
                     request->process();
-                    cout<<"完成一次\n";
+                    cout<<"完成2次\n";
                 }
                 else{
                     request->improv = 1;

@@ -525,6 +525,7 @@ bool http_conn::write()
 
 void http_conn::process()
 {
+    cout<<"processing...\n";
     HTTP_CODE read_ret = parse_content();
     if (read_ret == NO_REQUEST)
     {
