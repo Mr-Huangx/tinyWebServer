@@ -5,11 +5,11 @@ SRCS = main.cpp \
  		./http/http_conn.cpp \
   		./CGImysql/sql_connection_pool.cpp \
    		./threadpool/threadpool.cpp \
-    	./utils/utils.cpp \
 	 	webserver.cpp \
 	 	config.cpp \
 		./log/log.cpp \
-		./timer/lst_timer.cpp
+		./timer/lst_timer.cpp \
+		./utils/utils.cpp \
 OBJS = $(SRCS:.cpp=.o) 
 server: $(OBJS) 
 	$(CXX) -o $@ $^ -g -lpthread -L/usr/lib64/mysql -lmysqlclient 
