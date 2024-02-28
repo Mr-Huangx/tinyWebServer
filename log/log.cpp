@@ -9,9 +9,10 @@ void Log::init(string file, bool asy){
     fileName = file;
     is_async = asy;
 
-    outputFile = std::ofstream(file);
+    outputFile.open(file);
     if(outputFile.is_open()){
         cout<<"文件已经打开！"<<endl;
+        outputFile<<"文件已经打开\n";
     }
     else{
         cout<<"文件打开失败\n";
@@ -43,7 +44,7 @@ void Log::write(string str, int level){
             break;
     }
     
-    outputFile<<str.data();
+    outputFile<<str;
     cout<<"write ok\n";
 
 }
