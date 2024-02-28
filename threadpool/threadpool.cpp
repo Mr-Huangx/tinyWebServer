@@ -143,6 +143,7 @@ void ThreadPool<T>::run(){
             connectionRAII mysqlcon(&request->mysql, connPool);
             request->process();
         }
+        
     }
 }
 

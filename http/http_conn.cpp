@@ -17,23 +17,23 @@ int http_conn::epollfd = -1;//epoll_create返回的结果
 map<string, string> http_conn::users;
 My_lock http_conn::mutex;
 
-void http_conn::init(int m_sockfd, const sockaddr_in &addr, char *source,int TRIGMode,
-                    int close_log,string user, string passwd, string sqlname)
+void http_conn::init(int m_sockfd, const sockaddr_in &m_addr, char *m_source,int m_TRIGMode,
+                    int m_close_log,string m_user, string m_passwd, string m_sqlname)
 {
     //只有构造函数能使用列表初始化
-    this->sockfd = m_sockfd;
-    this->address = addr;
-    this->source = source;
-    utils.addfd(epollfd, sockfd, true, TRIGMode);
+    sockfd = m_sockfd;
+    address = m_addr;
+    source = m_source;
+    utils.addfd(epollfd, sockfd, true, m_TRIGMode);
     user_count++;
 
     //当浏览器出现连接重置时，可能是网站根目录出错或http响应格式出错或者访问的文件中内容完全为空
-    TRIGMode = TRIGMode;
-    close_log = close_log;
+    TRIGMode = m_TRIGMode;
+    close_log = m_close_log;
 
-    strcpy(sql_user, user.c_str());
-    strcpy(sql_password, passwd.c_str());
-    strcpy(sql_name, sqlname.c_str());
+    strcpy(sql_user, m_user.c_str());
+    strcpy(sql_password, m_passwd.c_str());
+    strcpy(sql_name, m_sqlname.c_str());
 
     init();
 }
@@ -57,6 +57,7 @@ void http_conn::init(){
     write_idx = 0;
     cgi = 0;
     state = 0;
+    
 
     memset(read_buf, '\0', READ_BUFFER_SIZE);
     memset(write_buf, '\0', WRITE_BUFFER_SIZE);
