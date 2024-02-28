@@ -25,7 +25,12 @@ int main(int argc, char *argv[]){
     server.init_log("log.txt", false);
 
     //测试log是否能使用
-    server.log->write("test", 0);
+    try{
+        server.log->write("test", 0);
+    }
+    catch(exception e){
+        cout<<"write函数出错了\n";
+    }
 
 
     //初始化server中连接mysql的user、passwd、database、config成员变量
