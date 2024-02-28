@@ -117,9 +117,9 @@ void ThreadPool<T>::run(){
                     request->improv = 1;//好像没啥用
                     connectionRAII mysqlcon(&request->mysql, connPool);
                     // log->write("正在处理http请求\n", 0);
-                    cout<<"完成1次\n";
+                    cout<<"read 完成1次\n";
                     request->process();
-                    cout<<"完成2次\n";
+                    cout<<"read 完成2次\n";
                 }
                 else{
                     request->improv = 1;
@@ -130,8 +130,9 @@ void ThreadPool<T>::run(){
             else{
                 //如果是写操作
                 //写操作直接发送数据给客户端，所以不需要连接池帮助
-
+                cout<<"write 完成一次\n";
                 request->write();
+                cout<<"write 完成两次\n";
                 request->improv = 1;
                 //写完之后需要把sockfd重新加入到epollfd中
 
