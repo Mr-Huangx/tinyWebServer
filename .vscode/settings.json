@@ -1,5 +1,5 @@
 {
-    "window.zoomLevel": 1,
+    "window.zoomLevel": 0.5,
     "files.associations": {
         "*.tcc": "cpp",
         "cctype": "cpp",
@@ -46,6 +46,8 @@
         "tuple": "cpp",
         "utility": "cpp",
         "stdexcept": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "ios": "cpp",
+        "xstring": "cpp"
     }
 }
