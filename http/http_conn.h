@@ -168,7 +168,7 @@ private:
     int TRIGMode;
     int close_log;
 
-
+    int improv;                 //用于记录当前http请求是否处理完成
     // map<string, string> users;  //记录数据库中所有的用户和密码
     
     char sql_user[100];

@@ -335,6 +335,13 @@ void WebServer::deal_read_data(int sockfd){
         }
         cout<<"deal_read_data函数加入任务成功\n";
 
+        while(true){
+            if(users[sockfd].improv == 1){
+                users[sockfd].improv = 0;
+                break;
+            }
+        }
+
     }
     else{
         //proactor模型，通知就绪事件
@@ -376,6 +383,13 @@ void WebServer::deal_write_data(int sockfd){
             //如果加入失败，则可能是任务太多等待几秒再继续
         }
         cout<<"deal_write_data函数加入写任务成功\n";
+    
+        while(true){
+            if(1 == users[sockfd].imrov){
+                users[sockfd].improv = 0;
+                break;
+            }
+        }
     }
     else
     {
