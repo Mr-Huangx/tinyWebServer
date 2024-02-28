@@ -35,15 +35,15 @@ void Log::write(string str, int level){
     //开始写
     switch(level){
         case 0:
-            str = "info:\n" + str;
+            str = "info:\n" + str + "\n";
             break;
 
         case 1:
-            str = "bug:\n" + str;
+            str = "bug:\n" + str + "\n";
             break;
     }
     
-    outputFile<<str<<endl;
+    outputFile<<str;
 
 }
 
