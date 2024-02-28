@@ -207,8 +207,8 @@ void WebServer::timer(int connfd, struct sockaddr_in client_address){
     util_timer *timer = new util_timer;
     timer->user_data = &users_timer[connfd];
     timer->cb_func = cb_func;
-    timer_t cur = time(NULL);
-    timer->expire = cur + 3* TIMESLOT;
+    time_t cur = time(NULL);
+    timer->expire = cur + 3*TIMESLOT;
 
     users_timer[connfd].timer = timer;
     utils.timer_list.add_timer(timer);
@@ -221,11 +221,10 @@ void WebServer::deal_timer(util_timer *timer, int sockfd){
     timer->cb_func(&users_timer[sockfd]);
     if (timer)
     {
-        utils.timer_lst.del_timer(timer);
+        utils.timer_list.del_timer(timer);
     }
 }
 void WebServer::deal_signal(bool& timeout, bool& stop_server){
-    int sig;
     char signals[1024];
     int ret = recv(pipefd[0], signals, sizeof(signals), 0);
     if(ret == -1){
@@ -311,7 +310,7 @@ bool WebServer::deal_client_connect(){
             // 第一版结束
 
             //第二版
-            timer(confd, client_address);
+            timer(connfd, client_address);
         }
         return false;
     }
@@ -360,9 +359,9 @@ void WebServer::deal_read_data(int sockfd){
 
 //更新当前timer中的expire时间
 void refresh_timer(util_timer* timer){
-    timer_t cur = time(NULL);
-    timer->expire = cur + 3* TIMESLOT;
-    utils.timer_lst.adjust_timer(timer);//在管理的升序链表中，更新timer的位置
+    time_t cur = time(NULL);
+    timer->expire = cur + 3*TIMESLOT;
+    utils.timer_list.adjust_timer(timer);//在管理的升序链表中，更新timer的位置
 }
 
 //处理sockfd需要发送数据
