@@ -358,7 +358,7 @@ void WebServer::deal_read_data(int sockfd){
 }
 
 //更新当前timer中的expire时间
-void refresh_timer(util_timer* timer){
+void WebServer::refresh_timer(util_timer* timer){
     time_t cur = time(NULL);
     timer->expire = cur + 3*TIMESLOT;
     utils.timer_list.adjust_timer(timer);//在管理的升序链表中，更新timer的位置
