@@ -28,13 +28,9 @@ int main(int argc, char *argv[]){
     server.log->write("test", 0);
 
     //初始化server中连接mysql的user、passwd、database、config成员变量
-    try{
-        server.init(user, passwd, database, config);
-        cout<<"webserver init ok"<<endl;
-    }
-    catch(exception e){
-        cout<<"write函数出错了\n";
-    }
+    server.init(user, passwd, database, config);
+    cout<<"webserver init ok"<<endl;
+
     //初始化数据库
     //初始化连接池中mysql的ip地址，登录mysql服务器的账户、密码、数据库名、端口号、线程池数量
     //初始化连接池中所有的用户
