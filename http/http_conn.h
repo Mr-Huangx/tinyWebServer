@@ -136,6 +136,8 @@ public:
     static map<string, string> users;//记录数据库中所有用户的账户和密码
     static My_lock mutex;
 
+    int improv;                 //用于记录当前http请求是否处理完成
+
 private:
     int sockfd;                 //当前http请求使用的socket
     sockaddr_in address;
@@ -168,7 +170,7 @@ private:
     int TRIGMode;
     int close_log;
 
-    int improv;                 //用于记录当前http请求是否处理完成
+    
     // map<string, string> users;  //记录数据库中所有的用户和密码
     
     char sql_user[100];
