@@ -12,7 +12,7 @@ void Log::init(string file, bool asy){
     outputFile.open(file);
     if(outputFile.is_open()){
         cout<<"文件已经打开！"<<endl;
-        outputFile<<"文件已经打开\n";
+        outputFile<<"文件已经打开";
     }
     else{
         cout<<"文件打开失败\n";
@@ -44,7 +44,8 @@ void Log::write(string str, int level){
             break;
     }
     
-    outputFile<<str;
+    //最后再来处理这里的问题
+    // outputFile<<str;
     cout<<"write ok\n";
 
 }
