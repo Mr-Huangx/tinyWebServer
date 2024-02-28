@@ -9,7 +9,7 @@ SRCS = main.cpp \
 	 	config.cpp \
 		./log/log.cpp \
 		./timer/lst_timer.cpp \
-		./utils/utils.cpp \
+		./utils/utils.cpp
 OBJS = $(SRCS:.cpp=.o) 
 server: $(OBJS) 
 	$(CXX) -o $@ $^ -g -lpthread -L/usr/lib64/mysql -lmysqlclient 
