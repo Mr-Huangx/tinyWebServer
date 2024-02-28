@@ -114,13 +114,13 @@ void ThreadPool<T>::run(){
                 if(request->read_once()){
                     //一次性将数据读完
                     //由于读操作之后可能需要根据数据库判断用户是否存在，因此需要连接池的帮助
-                    request->imporv = 1;//好像没啥用
+                    request->improv = 1;//好像没啥用
                     connectionRAII mysqlcon(&request->mysql, connPool);
                     log->write("正在处理http请求\n", 0);
                     request->process();
                 }
                 else{
-                    request->imporv = 1;
+                    request->improv = 1;
                     //数据读取失败，怎么办呢？
                     log->write("http请求处理失败\n", 1);
                 }
@@ -130,7 +130,7 @@ void ThreadPool<T>::run(){
                 //写操作直接发送数据给客户端，所以不需要连接池帮助
 
                 request->write();
-                request->imporv = 1;
+                request->improv = 1;
                 //写完之后需要把sockfd重新加入到epollfd中
 
             }
