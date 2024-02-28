@@ -73,7 +73,7 @@ void Utils::addsig(int sig, void(handler)(int), bool restart){
 //定时任务，不断触发SIGALRM信号
 void Utils::timer_handler()
 {
-    timer_lst.tick();
+    timer_list.tick();
     alarm(TIMESLOT);
 }
 
