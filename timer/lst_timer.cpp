@@ -103,6 +103,7 @@ void sort_timer_lst::tick(){
             break;
         }
         //调用定时器的回调函数，以执行定时任务
+        cout<<"关闭socket："<<temp->user_data->sockfd<<endl;
         temp->cb_func(temp->user_data);
 
         //删除定时器
