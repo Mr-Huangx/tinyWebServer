@@ -9,7 +9,7 @@ void Log::init(string file, bool asy){
     fileName = file;
     is_async = asy;
 
-    outputFile.open(file);
+    outputFile = std::ofstream(file);
     if(outputFile.is_open()){
         cout<<"文件已经打开！"<<endl;
     }
