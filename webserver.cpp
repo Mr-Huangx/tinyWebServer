@@ -341,7 +341,7 @@ void WebServer::deal_read_data(int sockfd){
             //如果加入失败，则可能是任务太多等待几秒再继续
             printf("sockfd:%d加入任务队列失败\n", sockfd);
         }
-        cout<<"deal_read_data函数加入任务成功\n";
+        // cout<<"deal_read_data函数加入任务成功\n";
 
     }
     else{
@@ -383,7 +383,7 @@ void WebServer::deal_write_data(int sockfd){
         while( !threadPool->append(users + sockfd, 1)){
             //如果加入失败，则可能是任务太多等待几秒再继续
         }
-        cout<<"deal_write_data函数加入写任务成功\n";
+        // cout<<"deal_write_data函数加入写任务成功\n";
     
     }
     else
