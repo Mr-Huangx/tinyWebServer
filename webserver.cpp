@@ -2,7 +2,7 @@
 
 const int MAX_FD = 65536;           //最大文件描述符
 const int MAX_EVENT_NUMBER = 10000; //最大事件数
-const int TIMESLOT = 5;             //最小超时时间
+const int TIMESLOT = 10;             //最小超时时间
 
 WebServer::WebServer(){
     //初始化users
@@ -157,25 +157,25 @@ void WebServer::eventListen(){
                 //输出日志
                 // cout<<"listenfd检测到有新的连接到来，并建立连接，客户端socket"<<sockfd<<endl;
                 if(flag == false){
-                    cout<<"listenfd在处理新的连接时出错了"<<endl;
+                    // cout<<"listenfd在处理新的连接时出错了"<<endl;
                     continue;
                 }
             }
             //处理信号
             else if((sockfd == pipefd[0]) && (events[i].events & EPOLLIN)){
-                cout<<"    处理信号\n";
+                // cout<<"    处理信号\n";
                 deal_signal(timeout, stop_server);
             }
             //处理客户端发来数据
             else if(events[i].events & EPOLLIN){
-                cout<<"  read task:\n";
-                cout<<"epoll_wait发现有客户端socket:"<< sockfd <<"发来请求，将请求放入队列中\n";
+                // cout<<"  read task:\n";
+                // cout<<"epoll_wait发现有客户端socket:"<< sockfd <<"发来请求，将请求放入队列中\n";
                 deal_read_data(sockfd);
             }
             //处理发送数据
             else if(events[i].events & EPOLLOUT){
-                cout<<"  write task:\n";
-                cout<<"epoll_wait socket:" << sockfd << "需要发送数据，将请求放入队列中\n";
+                // cout<<"  write task:\n";
+                // cout<<"epoll_wait socket:" << sockfd << "需要发送数据，将请求放入队列中\n";
                 deal_write_data(sockfd);
             }
             //1、检测到TCP连接被对方关闭
@@ -192,7 +192,7 @@ void WebServer::eventListen(){
         if(timeout){
                 //处理当前不活跃的socket
                 
-                cout<<"timeout 触发\n";
+                // cout<<"timeout 触发\n";
                 // utils.timer_handler();
                 // timeout = false;
             }

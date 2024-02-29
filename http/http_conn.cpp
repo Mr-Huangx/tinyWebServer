@@ -434,7 +434,7 @@ bool http_conn::read_once()
             printf("bytes_read <= 0\n");
             return false;
         }
-        printf("进行数据读取完成,sock传输数据为:%s\n", read_buf + read_idx);
+        // printf("进行数据读取完成,sock传输数据为:%s\n", read_buf + read_idx);
         return true;
     }
     //ET读数据
@@ -464,7 +464,7 @@ bool http_conn::read_once()
 bool http_conn::write()
 {
     //向客户端发送数据
-    printf("向客户端socket:%d 发送数据\n", sockfd);
+    // printf("向客户端socket:%d 发送数据\n", sockfd);
     int temp = 0;
 
     if (bytes_to_send == 0)
@@ -507,7 +507,7 @@ bool http_conn::write()
         if (bytes_to_send <= 0)
         {
             unmap();
-            printf("发送成功socket:%d 重新被放入epollfd中\n", sockfd);
+            // printf("发送成功socket:%d 重新被放入epollfd中\n", sockfd);
             utils.modfd(epollfd, sockfd, EPOLLIN, TRIGMode);
 
             if (linger)
@@ -525,7 +525,7 @@ bool http_conn::write()
 
 void http_conn::process()
 {
-    cout<<"processing...\n";
+    // cout<<"processing...\n";
     HTTP_CODE read_ret = parse_content();
     if (read_ret == NO_REQUEST)
     {
@@ -540,7 +540,7 @@ void http_conn::process()
         printf("处理当前任务的时候，write出错，关闭socket:%d\n", sockfd);
         close_conn();
     }
-    printf("处理完当前任务，对socket \"%d\", 重新放入epollfd中\n", sockfd);
+    // printf("处理完当前任务，对socket \"%d\", 重新放入epollfd中\n", sockfd);
     utils.modfd(epollfd, sockfd, EPOLLOUT, TRIGMode);
 }
 
