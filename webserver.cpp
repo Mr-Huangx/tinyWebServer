@@ -192,9 +192,9 @@ void WebServer::eventListen(){
         if(timeout){
                 //处理当前不活跃的socket
                 
-                // cout<<"timeout 触发\n";
-                // utils.timer_handler();
-                // timeout = false;
+                cout<<"timeout 触发\n";
+                utils.timer_handler();
+                timeout = false;
             }
     }
     
