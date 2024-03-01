@@ -331,10 +331,7 @@ void WebServer::deal_read_data(int sockfd){
     //根据I/O模型，进行不同操作
     //reactor模型
     if(config.actor_model == 1){
-        if(timer){
-            //先将对应timer中的expire进行更新，因为他活跃了一次
-            refresh_timer(timer);
-        }
+        
 
         //监听到读事件，将事件放入请求队列中，让逻辑处理单元进行处理
         while(!threadPool->append(users + sockfd, 0)){
@@ -343,6 +340,11 @@ void WebServer::deal_read_data(int sockfd){
         }
         // cout<<"deal_read_data函数加入任务成功\n";
 
+        if(timer){
+            //先将对应timer中的expire进行更新，因为他活跃了一次
+            refresh_timer(timer);
+        }
+        
         //需要等待子线程对socket进行读取，看看是否读取成功
         while(true){
                 if(1 == users[sockfd].improv){
@@ -360,17 +362,15 @@ void WebServer::deal_read_data(int sockfd){
     else{
         //proactor模型，通知就绪事件
         if(users[sockfd].read_once()){
-            if(timer){
-                refresh_timer(timer);
-            }
-
             //由主进程一次性将数据处理完，然后通知程序进行后续操作
             while(!threadPool->append_p(users+sockfd)){
                 //如果加入失败，则可能是任务太多等待几秒再继续
                 printf("sockfd:%d加入任务队列失败\n", sockfd);
             }
 
-            
+            if(timer){
+                refresh_timer(timer);
+            }
         }
         else{
             //读取失败，则关闭连接
