@@ -172,9 +172,9 @@ http_conn::HTTP_CODE http_conn::parse_requestline(char* text){
 
     //http请求行处理完毕,状态转移到对头部字段的分析
     check_state = CHECK_STATE_HEADER;
-}
-    return NO_REQUEST;
 
+    return NO_REQUEST;
+}
 //分析头部字段
 http_conn::HTTP_CODE http_conn::parse_headers(char *text){
     //遇到一个空行，说明我们得到了一个正确的HTTP请求
