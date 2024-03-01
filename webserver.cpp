@@ -238,7 +238,7 @@ void WebServer::deal_signal(bool& timeout, bool& stop_server){
         return;
     }
     else{
-        for(int i= 0; i > ret; i++){
+        for(int i= 0; i < ret; i++){
             switch (signals[i])
             {
                 //timeout变量标记有定时任务需要处理，但不立即处理定时任务，因为定时任务的优先级不是很高，我们优先处理其他更加重要的任务
@@ -271,8 +271,8 @@ bool WebServer::deal_client_connect(){
     if(config.LISTENTrigmode == 0){
         //如果listenfd采用的是LT模式
         int connfd = accept(listenfd, (struct sockaddr*)&client_address, &client_addrlength);
-        if(connfd < 0){
             //建立连接失败
+        if(connfd < 0){
             return false;
         }
 
@@ -347,13 +347,14 @@ void WebServer::deal_read_data(int sockfd){
     else{
         //proactor模型，通知就绪事件
         if(users[sockfd].read_once()){
+            if(timer){
+                refresh_timer(timer);
+            }
+
             //由主进程一次性将数据处理完，然后通知程序进行后续操作
             while(!threadPool->append_p(users+sockfd)){
                 //如果加入失败，则可能是任务太多等待几秒再继续
                 printf("sockfd:%d加入任务队列失败\n", sockfd);
-            }
-            if(timer){
-                refresh_timer(timer);
             }
         }
         else{

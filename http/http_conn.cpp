@@ -509,11 +509,7 @@ bool http_conn::write()
             unmap();
             // printf("发送成功socket:%d 重新被放入epollfd中\n", sockfd);
             
-            if(linger) utils.modfd(epollfd, sockfd, EPOLLIN, TRIGMode);
-            else{
-                //关闭连接
-                
-            }
+            utils.modfd(epollfd, sockfd, EPOLLIN, TRIGMode);
 
             if (linger)
             {
