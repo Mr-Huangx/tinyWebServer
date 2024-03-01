@@ -154,28 +154,21 @@ void WebServer::eventListen(){
             if(sockfd == listenfd){
                 //如果是listenfd有事件发生，即有新的客户连接
                 bool flag = deal_client_connect();
-                //输出日志
-                // cout<<"listenfd检测到有新的连接到来，并建立连接，客户端socket"<<sockfd<<endl;
+
                 if(flag == false){
-                    // cout<<"listenfd在处理新的连接时出错了"<<endl;
                     continue;
                 }
             }
             //处理信号
             else if((sockfd == pipefd[0]) && (events[i].events & EPOLLIN)){
-                // cout<<"    处理信号\n";
                 deal_signal(timeout, stop_server);
             }
             //处理客户端发来数据
             else if(events[i].events & EPOLLIN){
-                // cout<<"  read task:\n";
-                // cout<<"epoll_wait发现有客户端socket:"<< sockfd <<"发来请求，将请求放入队列中\n";
                 deal_read_data(sockfd);
             }
             //处理发送数据
             else if(events[i].events & EPOLLOUT){
-                // cout<<"  write task:\n";
-                // cout<<"epoll_wait socket:" << sockfd << "需要发送数据，将请求放入队列中\n";
                 deal_write_data(sockfd);
             }
             //1、检测到TCP连接被对方关闭
@@ -192,7 +185,7 @@ void WebServer::eventListen(){
         if(timeout){
                 //处理当前不活跃的socket
                 
-                cout<<"timeout 触发\n";
+                // cout<<"timeout 触发\n";
                 utils.timer_handler();
                 timeout = false;
             }
@@ -244,14 +237,12 @@ void WebServer::deal_signal(bool& timeout, bool& stop_server){
                 //timeout变量标记有定时任务需要处理，但不立即处理定时任务，因为定时任务的优先级不是很高，我们优先处理其他更加重要的任务
             case SIGALRM:
             {
-                cout<<"SIGALRM触发\n";
                 timeout = true;
                 break;
             }
                 //终端发送的指令是终止服务，则关闭服务器
             case SIGTERM:
             {
-                cout<<"SIGTER关闭服务器\n";
                 stop_server = true;
             }
             
@@ -344,7 +335,7 @@ void WebServer::deal_read_data(int sockfd){
             //先将对应timer中的expire进行更新，因为他活跃了一次
             refresh_timer(timer);
         }
-        
+
         //需要等待子线程对socket进行读取，看看是否读取成功
         while(true){
                 if(1 == users[sockfd].improv){
