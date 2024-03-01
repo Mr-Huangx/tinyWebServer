@@ -36,6 +36,7 @@ void http_conn::init(int m_sockfd, const sockaddr_in &m_addr, char *m_source,int
     strcpy(sql_name, m_sqlname.c_str());
 
     close_this_conn = false;
+    improv = 0;
     init();
 }
 
@@ -120,16 +121,16 @@ http_conn::HTTP_CODE http_conn::parse_requestline(char* text){
 
 
     *url++ = '\0';//将出现 空白、\t字符的位置设置为字符串结尾，因此，text就只保留了method字符串
-    char* method = text;
+    char* m_method = text;
     
-    if( strcasecmp(method, "GET") == 0){
+    if( strcasecmp(m_method, "GET") == 0){
         //如果是get方法
-        this->method = GET;
+        method = GET;
     }
-    else if(strcasecmp(method, "POST") == 0){
+    else if(strcasecmp(m_method, "POST") == 0){
 
         //如果是post方法
-        this->method = POST;
+        method = POST;
         cgi = 1;
     }
     else{
@@ -171,8 +172,8 @@ http_conn::HTTP_CODE http_conn::parse_requestline(char* text){
 
     //http请求行处理完毕,状态转移到对头部字段的分析
     check_state = CHECK_STATE_HEADER;
-    return NO_REQUEST;
 }
+    return NO_REQUEST;
 
 //分析头部字段
 http_conn::HTTP_CODE http_conn::parse_headers(char *text){
@@ -185,12 +186,6 @@ http_conn::HTTP_CODE http_conn::parse_headers(char *text){
         }
 
         return GET_REQUEST;
-    }
-    else if(strncasecmp(text, "Host:", 5) == 0){
-        //处理Host请求头部
-        text += 5;
-        text += strspn(text, "\t");
-        host = text;
     }
     else if(strncasecmp(text, "Connection:", 11) == 0){
         //处理connection请求头部
@@ -206,6 +201,12 @@ http_conn::HTTP_CODE http_conn::parse_headers(char *text){
         text += 15;
         text += strspn(text, " \t");
         content_length = atol(text);
+    }
+    else if(strncasecmp(text, "Host:", 5) == 0){
+        //处理Host请求头部
+        text += 5;
+        text += strspn(text, "\t");
+        host = text;
     }
     else{
         //只处理Host/connection/content_length字段，其他不处理
@@ -232,7 +233,7 @@ http_conn::HTTP_CODE http_conn::parse_content()
     HTTP_CODE ret = NO_REQUEST;
     char *text = 0;
 
-    while((check_state == CHECK_STATE_CONTENT && line_status == LINE_OK) || (line_status = parse_line()) == LINE_OK)
+    while((check_state == CHECK_STATE_CONTENT && line_status == LINE_OK) || ((line_status = parse_line()) == LINE_OK))
     {
         text = read_buf + start_line;
         start_line = checked_idx;
@@ -432,7 +433,6 @@ bool http_conn::read_once()
 
         if (bytes_read <= 0)
         {
-            printf("bytes_read <= 0\n");
             return false;
         }
         // printf("进行数据读取完成,sock传输数据为:%s\n", read_buf + read_idx);
