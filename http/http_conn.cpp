@@ -197,7 +197,7 @@ http_conn::HTTP_CODE http_conn::parse_headers(char *text){
         text += strspn(text, " \t");
         if (strcasecmp(text, "keep-alive") == 0)
         {
-            // linger = true;
+            linger = true;
         }
     }
     else if(strncasecmp(text, "Content-length:", 15) == 0){
