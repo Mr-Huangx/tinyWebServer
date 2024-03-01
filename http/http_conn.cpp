@@ -35,6 +35,7 @@ void http_conn::init(int m_sockfd, const sockaddr_in &m_addr, char *m_source,int
     strcpy(sql_password, m_passwd.c_str());
     strcpy(sql_name, m_sqlname.c_str());
 
+    close_this_conn = false;
     init();
 }
 

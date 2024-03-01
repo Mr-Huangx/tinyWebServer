@@ -137,6 +137,7 @@ public:
     static My_lock mutex;
 
     int improv;                 //用于记录当前http请求是否处理完成
+    bool close_this_conn;       //由于读取或者写入失败，而需要关闭此连接
 
 private:
     int sockfd;                 //当前http请求使用的socket

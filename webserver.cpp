@@ -343,6 +343,19 @@ void WebServer::deal_read_data(int sockfd){
         }
         // cout<<"deal_read_data函数加入任务成功\n";
 
+        //需要等待子线程对socket进行读取，看看是否读取成功
+        while(true){
+                if(1 == users[sockfd].improv){
+                    if(users[sockfd].close_this_conn){
+                        //处理失败，需要关闭连接；
+                        deal_timer(timer, sockfd);
+                        users[sockfd].close_this_conn = false;
+                    }
+                    users[sockfd].improv = 0;
+                    break;
+                }
+        }
+
     }
     else{
         //proactor模型，通知就绪事件
@@ -356,6 +369,8 @@ void WebServer::deal_read_data(int sockfd){
                 //如果加入失败，则可能是任务太多等待几秒再继续
                 printf("sockfd:%d加入任务队列失败\n", sockfd);
             }
+
+            
         }
         else{
             //读取失败，则关闭连接
@@ -385,6 +400,19 @@ void WebServer::deal_write_data(int sockfd){
             //如果加入失败，则可能是任务太多等待几秒再继续
         }
         // cout<<"deal_write_data函数加入写任务成功\n";
+
+        //判断子线程是否写入成功，不成功则将当前socket进行关闭
+        while(true){
+                if(1 == users[sockfd].improv){
+                    if(users[sockfd].close_this_conn){
+                        //处理失败，需要关闭连接；
+                        deal_timer(timer, sockfd);
+                        users[sockfd].close_this_conn = false;
+                    }
+                    users[sockfd].improv = 0;
+                    break;
+                }
+    }
     
     }
     else

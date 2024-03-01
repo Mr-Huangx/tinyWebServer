@@ -125,16 +125,25 @@ void ThreadPool<T>::run(){
                     request->improv = 1;
                     //数据读取失败，怎么办呢？
                     // log->write("http请求处理失败\n", 1);
+                    
+                    //如果读取失败，关闭这个连接
+                    request->close_this_conn = true;
                 }
             }
             else{
                 //如果是写操作
                 //写操作直接发送数据给客户端，所以不需要连接池帮助
                 // cout<<"write 完成一次\n";
-                request->write();
+                if(request->write()){
+                    request->improv = 1;
+                }
                 // cout<<"write 完成两次\n";
-                request->improv = 1;
                 //写完之后需要把sockfd重新加入到epollfd中
+                else
+                {
+                    request->improv = 1;
+                    request->close_this_conn = true;
+                }
 
             }
         }
