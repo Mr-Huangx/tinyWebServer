@@ -78,10 +78,10 @@
 
 > reactor模式  LT+LT，46QPS
 
-![image-20240301115659099](C:\Users\11482\AppData\Roaming\Typora\typora-user-images\image-20240301115659099.png)
+![image-20240301115659099](.\reactor_result.png)
 
 
 
 >  proactor模式 LT+LT ，17072 QPS
 
-![image-20240301124702776](C:\Users\11482\AppData\Roaming\Typora\typora-user-images\image-20240301124702776.png)
+![image-20240301124702776](.\proactor_result.png)
