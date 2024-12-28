@@ -78,10 +78,14 @@
 
 > reactor模式  LT+LT，46QPS
 
-![image-20240301115659099](.\reactor_result.png)
+
+
+<img src=".\reactor_result.png">
 
 
 
 >  proactor模式 LT+LT ，17072 QPS
 
-![image-20240301124702776](.\proactor_result.png)
+
+
+<img src=".\proactor_result.png">
